@@ -156,6 +156,15 @@ body { background: var(--bg); font-family: 'DM Mono', monospace; color: var(--na
 .notes-input { width: 100%; background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; color: var(--navy); font-family: 'DM Mono', monospace; font-size: 12px; padding: 8px 10px; resize: none; min-height: 44px; }
 .notes-input:focus { outline: none; border-color: var(--border2); }
 
+/* ── CHART ── */
+.chart-toggle { width: 100%; background: var(--white); border: 1px solid var(--border); border-radius: var(--r); padding: 9px 12px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted2); cursor: pointer; box-shadow: var(--shadow); }
+.chart-toggle:active { background: var(--bg); }
+.chart-toggle-arrow { font-size: 13px; transition: transform 0.2s; color: var(--blue); }
+.chart-toggle.open .chart-toggle-arrow { transform: rotate(180deg); }
+.chart-wrap { display: none; background: var(--white); border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--r) var(--r); padding: 12px 8px 6px; margin-top: -14px; margin-bottom: 14px; box-shadow: var(--shadow); }
+.chart-wrap.open { display: block; }
+.chart-wrap text { font-family: 'DM Mono', monospace; }
+
 /* ── HISTORY VIEW ── */
 .hist-section { margin-bottom: 20px; }
 .hist-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 2px solid var(--border); }
@@ -594,6 +603,72 @@ function renderDay() {
   document.getElementById('view-day').innerHTML = html;
 }
 
+// ── CHART ────────────────────────────────────────────────────────────────────
+function buildChart(rows, chartId) {
+  if (rows.length < 2) return '';
+
+  const W = 340, H = 130;
+  const PAD = { top: 18, right: 16, bottom: 28, left: 38 };
+  const iW = W - PAD.left - PAD.right;
+  const iH = H - PAD.top - PAD.bottom;
+
+  const pesos = rows.map(r => parseFloat(r.peso));
+  const rms   = rows.map(r => calc1RM(r.peso, r.reps));
+  const minP  = Math.min(...pesos);
+  const maxP  = Math.max(...pesos);
+  const rng   = maxP - minP || 1;
+
+  const xS = i  => PAD.left + (i / (rows.length - 1)) * iW;
+  const yS = v  => PAD.top  + iH - ((v - minP) / rng) * iH;
+
+  const pts  = rows.map((r, i) => `${xS(i).toFixed(1)},${yS(parseFloat(r.peso)).toFixed(1)}`);
+  const area = [`${xS(0).toFixed(1)},${(PAD.top+iH).toFixed(1)}`, ...pts, `${xS(rows.length-1).toFixed(1)},${(PAD.top+iH).toFixed(1)}`].join(' ');
+  const gid  = 'cg' + chartId;
+
+  let s = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
+  <defs>
+    <linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2563eb" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#2563eb" stop-opacity="0"/>
+    </linearGradient>
+  </defs>`;
+
+  // Grid lines y
+  [0, 0.5, 1].forEach(t => {
+    const gy = PAD.top + iH * (1 - t);
+    const val = (minP + rng * t).toFixed(1);
+    s += `<line x1="${PAD.left}" y1="${gy.toFixed(1)}" x2="${PAD.left+iW}" y2="${gy.toFixed(1)}" stroke="#e4e8ef" stroke-width="1"/>`;
+    s += `<text x="${(PAD.left-5).toFixed(0)}" y="${(gy+3).toFixed(0)}" text-anchor="end" font-size="8" fill="#94a3b8">${val}</text>`;
+  });
+
+  // Area + line
+  s += `<polygon points="${area}" fill="url(#${gid})"/>`;
+  s += `<polyline points="${pts.join(' ')}" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+
+  // Puntos, etiquetas semana y peso
+  rows.forEach((r, i) => {
+    const x   = xS(i);
+    const y   = yS(parseFloat(r.peso));
+    const best = parseFloat(r.peso) === maxP;
+    const col  = best ? '#16a34a' : '#2563eb';
+    const rad  = best ? 5.5 : 3.5;
+
+    s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${rad}" fill="${col}" stroke="white" stroke-width="1.5"/>`;
+
+    // Semana abajo
+    s += `<text x="${x.toFixed(1)}" y="${H-5}" text-anchor="middle" font-size="8" fill="#94a3b8">S${String(r.week).padStart(2,'0')}</text>`;
+
+    // Peso arriba del punto (primer, último y máximo)
+    if (i === 0 || i === rows.length - 1 || best) {
+      const ly = y < PAD.top + 14 ? y + 14 : y - 7;
+      s += `<text x="${x.toFixed(1)}" y="${ly.toFixed(0)}" text-anchor="middle" font-size="9" font-weight="600" fill="${col}">${r.peso}</text>`;
+    }
+  });
+
+  s += `</svg>`;
+  return s;
+}
+
 // ── RENDER HISTORIAL ──────────────────────────────────────────────────────────
 function renderHistorial() {
   const s = getState();
@@ -665,6 +740,18 @@ function renderHistorial() {
         });
 
         html += `</div>`;
+
+        // Gráfica de progresión (desplegable)
+        const chartSvg = buildChart(rows, `${day.id}-${mIdx}-${eIdx}`);
+        if (chartSvg) {
+          const cid = `chart-${day.id}-${mIdx}-${eIdx}`;
+          html += `
+            <button class="chart-toggle" onclick="toggleChart('${cid}',this)">
+              <span>Progresión de peso</span>
+              <span class="chart-toggle-arrow">⌄</span>
+            </button>
+            <div class="chart-wrap" id="${cid}">${chartSvg}</div>`;
+        }
       });
     });
 
@@ -677,6 +764,19 @@ function renderHistorial() {
 // ── EVENTS ────────────────────────────────────────────────────────────────────
 function toggleEx(id) {
   document.getElementById(id).classList.toggle('open');
+}
+
+function toggleChart(id, btn) {
+  const chart = document.getElementById(id);
+  const isOpen = chart.classList.toggle('open');
+  btn.classList.toggle('open', isOpen);
+  if (isOpen) {
+    btn.style.borderRadius = 'var(--r) var(--r) 0 0';
+    btn.style.borderBottom = 'none';
+  } else {
+    btn.style.borderRadius = 'var(--r)';
+    btn.style.borderBottom = '';
+  }
 }
 
 function saveField(dayId, mIdx, eIdx, field, value) {
@@ -810,8 +910,6 @@ function clearAllData() {
     renderHistorial();
   }
 }
-
-// ── TOAST ─────────────────────────────────────────────────────────────────────
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -819,31 +917,27 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// ── INIT ──────────────────────────────────────────────────────────────────────
+// INIT
 renderTabs();
 renderDay();
 </script>
 
-<!-- ── PWA ── -->
+<!-- PWA -->
 <script>
 (function() {
-  // Genera icono con canvas
   function makeIcon(size) {
     const c = document.createElement('canvas');
     c.width = c.height = size;
     const ctx = c.getContext('2d');
-    // Fondo navy
     ctx.fillStyle = '#1e293b';
     ctx.beginPath();
     ctx.roundRect(0, 0, size, size, size * 0.22);
     ctx.fill();
-    // Texto "ET"
     ctx.fillStyle = '#ffffff';
-    ctx.font = `800 ${Math.round(size * 0.38)}px 'Arial Black', Arial, sans-serif`;
+    ctx.font = '800 ' + Math.round(size * 0.38) + 'px Arial Black, Arial, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('ET', size / 2, size * 0.48);
-    // Punto azul
     ctx.fillStyle = '#2563eb';
     const r = size * 0.07;
     ctx.beginPath();
@@ -856,13 +950,11 @@ renderDay();
   const icon512 = makeIcon(512);
   const icon180 = makeIcon(180);
 
-  // Apple touch icon
   document.getElementById('pwa-icon').href = icon180;
 
-  // Manifest inline
   const manifest = {
-    name: 'EN·TRENO',
-    short_name: 'En·Treno',
+    name: 'EN TRENO',
+    short_name: 'EnTreno',
     description: 'App de seguimiento de entrenos',
     display: 'standalone',
     orientation: 'portrait',
@@ -874,47 +966,19 @@ renderDay();
       { src: icon512, sizes: '512x512', type: 'image/png' }
     ]
   };
-  const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+    const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
   document.getElementById('pwa-manifest').href = URL.createObjectURL(manifestBlob);
 
-  // Service Worker para caché offline
   if ('serviceWorker' in navigator) {
-    const swCode = `
-      const CACHE = 'entreno-v2';
-      const PAGE_URL = self.registration.scope;
-
-      self.addEventListener('install', e => {
-        self.skipWaiting();
-        e.waitUntil(
-          caches.open(CACHE).then(cache => cache.add(PAGE_URL))
-        );
-      });
-
-      self.addEventListener('activate', e => {
-        e.waitUntil(
-          caches.keys().then(keys =>
-            Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-          ).then(() => clients.claim())
-        );
-      });
-
-      self.addEventListener('fetch', e => {
-        if (e.request.mode === 'navigate') {
-          e.respondWith(
-            fetch(e.request)
-              .then(res => {
-                const clone = res.clone();
-                caches.open(CACHE).then(c => c.put(e.request, clone));
-                return res;
-              })
-              .catch(() => caches.match(PAGE_URL))
-          );
-        }
-      });
-    `;
+    const swCode = [
+      'const CACHE = "entreno-v2";',
+      'const PAGE_URL = self.registration.scope;',
+      'self.addEventListener("install", e => { self.skipWaiting(); e.waitUntil(caches.open(CACHE).then(c => c.add(PAGE_URL))); });',
+      'self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => clients.claim())); });',
+      'self.addEventListener("fetch", e => { if (e.request.mode === "navigate") { e.respondWith(fetch(e.request).then(res => { const clone = res.clone(); caches.open(CACHE).then(c => c.put(e.request, clone)); return res; }).catch(() => caches.match(PAGE_URL))); } });'
+    ].join('\n');
     const blob = new Blob([swCode], { type: 'application/javascript' });
-    navigator.serviceWorker.register(URL.createObjectURL(blob), { scope: './' })
-      .catch(() => {});
+    navigator.serviceWorker.register(URL.createObjectURL(blob), { scope: './' }).catch(() => {});
   }
 })();
 </script>
