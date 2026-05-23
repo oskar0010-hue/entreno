@@ -308,7 +308,8 @@ const PLAN = [
     ]},
     {name:"Bíceps",color:"var(--biceps)",exercises:[
       {ord:1,name:"Bíceps polea baja (una mano)",series:3,reps:"10",prev:"9",alt:false,note:""},
-      {ord:2,name:"Curl inclinado mancuernas",series:5,reps:"8–10",prev:"12",alt:false,note:""},
+      {ord:2,name:"Curl inclinado mancuernas",series:5,reps:"8–10",prev:"12",alt:true,note:""},
+      {ord:2,name:"Bíceps pecho sobre banco",series:5,reps:"8–10",prev:"—",alt:true,note:""},
     ]},
     {name:"Hombro post.",color:"var(--hombro)",exercises:[
       {ord:1,name:"Hombro posterior máquina",series:4,reps:"10–12",prev:"59",alt:true,note:""},
@@ -404,9 +405,12 @@ function calcVol(peso, reps, series) {
   const p = parseFloat(peso), r = parseFloat(reps), s = parseFloat(series);
   return (p && r && s) ? p * r * s : null;
 }
-function calc1RM(peso, reps) {
+function calc1RM(peso, reps, rir) {
   const p = parseFloat(peso), r = parseFloat(reps);
-  return (p && r) ? Math.round(p * (1 + r / 30) * 10) / 10 : null;
+  if (!p || !r) return null;
+  const ri = (rir !== null && rir !== undefined && !isNaN(parseFloat(rir))) ? parseFloat(rir) : 0;
+  const repsToFailure = r + ri;
+  return Math.round(p * (1 + repsToFailure / 30) * 10) / 10;
 }
 function calcInt(peso, rm) {
   return (peso && rm) ? Math.round(parseFloat(peso) / rm * 1000) / 10 : null;
@@ -497,7 +501,7 @@ function renderDay() {
       const id = `e-${currentDay}-${mIdx}-${eIdx}`;
       const st = getEx(currentWeek, currentDay, mIdx, eIdx);
       const vol = calcVol(st.peso, st.reps, ex.series);
-      const rm = calc1RM(st.peso, st.reps);
+      const rm = calc1RM(st.peso, st.reps, st.rir);
       const intens = calcInt(st.peso, rm);
       const refEf = st.rir !== null ? calcRefEf(ex.series, st.reps, st.rir) : null;
       const prevP = getPrevPeso(currentDay, mIdx, eIdx);
@@ -809,7 +813,7 @@ function updateMetrics(dayId, mIdx, eIdx) {
   const ex = PLAN[dayId-1].muscles[mIdx].exercises[eIdx];
 
   const vol = calcVol(st.peso, st.reps, ex.series);
-  const rm = calc1RM(st.peso, st.reps);
+  const rm = calc1RM(st.peso, st.reps, st.rir);
   const intens = calcInt(st.peso, rm);
   const refEf = st.rir !== null ? calcRefEf(ex.series, st.reps, st.rir) : null;
 
