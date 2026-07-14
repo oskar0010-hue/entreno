@@ -117,13 +117,14 @@ body { background: var(--bg); font-family: 'DM Mono', monospace; color: var(--na
 .prev-val { color: var(--navy); font-weight: 500; margin-left: auto; }
 
 /* ── INPUT GRID ── */
-.input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.input-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
 .input-group { }
 .input-lbl { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; text-align: center; }
 .num-input { width: 100%; background: var(--bg); border: 1.5px solid var(--border2); border-radius: 8px; color: var(--navy); font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 500; text-align: center; padding: 10px 4px; -moz-appearance: textfield; transition: border-color 0.15s, background 0.15s; }
 .num-input::-webkit-outer-spin-button, .num-input::-webkit-inner-spin-button { -webkit-appearance: none; }
 .num-input:focus { outline: none; }
 .num-input.peso-input:focus { border-color: var(--blue); background: var(--blue-light); }
+.num-input.series-input:focus { border-color: var(--blue); background: var(--blue-light); }
 .num-input.reps-input:focus { border-color: var(--blue); background: var(--blue-light); }
 .num-input.rir-input:focus { border-color: var(--amber); background: var(--amber-light); }
 .num-input.rir-input { color: var(--amber); }
@@ -392,7 +393,18 @@ function setState(s) { localStorage.setItem('gym_v2', JSON.stringify(s)); }
 
 function getEx(week, dayId, mIdx, eIdx) {
   const s = getState();
-  return s?.[week]?.[dayId]?.[mIdx]?.[eIdx] || {peso:'', reps:'', rir:null, notas:''};
+  return s?.[week]?.[dayId]?.[mIdx]?.[eIdx] || {peso:'', series:'', reps:'', rir:null, notas:''};
+}
+
+// Series realmente realizadas. El plan (ex.series) es solo el objetivo/referencia;
+// si el usuario ha registrado cuántas series hizo de verdad (a veces menos por cansancio),
+// esas son las que cuentan para volumen y reps efectivas.
+function actualSeries(ex, st) {
+  if (st && st.series !== undefined && st.series !== null && st.series !== '') {
+    const n = parseFloat(st.series);
+    if (!isNaN(n)) return n;
+  }
+  return ex.series;
 }
 function setEx(week, dayId, mIdx, eIdx, data) {
   const s = getState();
@@ -433,7 +445,7 @@ function getDayVol(week, dayId) {
   PLAN[dayId-1].muscles.forEach((m, mi) => {
     m.exercises.forEach((ex, ei) => {
       const d = s?.[week]?.[dayId]?.[mi]?.[ei];
-      if (d) { const v = calcVol(d.peso, d.reps, ex.series); if (v) t += v; }
+      if (d) { const v = calcVol(d.peso, d.reps, actualSeries(ex, d)); if (v) t += v; }
     });
   });
   return t;
@@ -443,7 +455,32 @@ function getMuscleVol(week, dayId, mIdx) {
   const s = getState();
   PLAN[dayId-1].muscles[mIdx].exercises.forEach((ex, ei) => {
     const d = s?.[week]?.[dayId]?.[mIdx]?.[ei];
-    if (d) { const v = calcVol(d.peso, d.reps, ex.series); if (v) t += v; }
+    if (d) { const v = calcVol(d.peso, d.reps, actualSeries(ex, d)); if (v) t += v; }
+  });
+  return t;
+}
+function getDaySeries(week, dayId) {
+  let t = 0;
+  const s = getState();
+  PLAN[dayId-1].muscles.forEach((m, mi) => {
+    m.exercises.forEach((ex, ei) => {
+      const d = s?.[week]?.[dayId]?.[mi]?.[ei];
+      if (d && (d.peso || d.reps || d.series)) t += actualSeries(ex, d);
+    });
+  });
+  return t;
+}
+// Cuenta solo los ejercicios realmente marcados/completados. El PLAN incluye
+// alternativas (mismo ord) por si el principal no se puede hacer, pero eso no
+// significa que se hagan ambas — solo cuenta lo que el usuario ha rellenado.
+function getDayExerciseCount(week, dayId) {
+  let t = 0;
+  const s = getState();
+  PLAN[dayId-1].muscles.forEach((m, mi) => {
+    m.exercises.forEach((ex, ei) => {
+      const d = s?.[week]?.[dayId]?.[mi]?.[ei];
+      if (d && (d.peso || d.reps || d.series)) t++;
+    });
   });
   return t;
 }
@@ -470,8 +507,8 @@ function renderDay() {
   if (currentView !== 'day') return;
   const day = PLAN[currentDay - 1];
   const totalVol = getDayVol(currentWeek, currentDay);
-  const exCount = day.muscles.reduce((a, m) => a + m.exercises.length, 0);
-  const seriesCount = day.muscles.reduce((a, m) => a + m.exercises.reduce((b, ex) => b + ex.series, 0), 0);
+  const exCount = getDayExerciseCount(currentWeek, currentDay);
+  const seriesCount = getDaySeries(currentWeek, currentDay);
 
   let html = `
     <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:var(--muted2);margin-bottom:12px">${day.sub}</div>
@@ -481,11 +518,11 @@ function renderDay() {
         <div class="stat-lbl">Vol. kg</div>
       </div>
       <div class="stat-card">
-        <div class="stat-val">${exCount}</div>
+        <div class="stat-val" id="sv-excount">${exCount}</div>
         <div class="stat-lbl">Ejercicios</div>
       </div>
       <div class="stat-card">
-        <div class="stat-val">${seriesCount}</div>
+        <div class="stat-val" id="sv-series">${seriesCount}</div>
         <div class="stat-lbl">Series</div>
       </div>
       <div class="stat-card">
@@ -508,10 +545,11 @@ function renderDay() {
     muscle.exercises.forEach((ex, eIdx) => {
       const id = `e-${currentDay}-${mIdx}-${eIdx}`;
       const st = getEx(currentWeek, currentDay, mIdx, eIdx);
-      const vol = calcVol(st.peso, st.reps, ex.series);
+      const ser = actualSeries(ex, st);
+      const vol = calcVol(st.peso, st.reps, ser);
       const rm = calc1RM(st.peso, st.reps, st.rir);
       const intens = calcInt(st.peso, rm);
-      const refEf = st.rir !== null ? calcRefEf(ex.series, st.reps, st.rir) : null;
+      const refEf = st.rir !== null ? calcRefEf(ser, st.reps, st.rir) : null;
       const prevP = getPrevPeso(currentDay, mIdx, eIdx);
       const delta = (st.peso && prevP) ? parseFloat(st.peso) - prevP : null;
       const hasData = st.peso || st.reps;
@@ -537,7 +575,7 @@ function renderDay() {
           <div class="ex-top" onclick="toggleEx('${id}')">
             <div class="ex-ord" style="background:${muscle.color}22;color:${muscle.color}">${ex.ord}</div>
             <div class="ex-name">${ex.name}${ex.alt ? ' <span class="ex-alt-tag">ALT</span>' : ''}</div>
-            <div class="ex-summary">${st.peso ? st.peso + ' kg' : ex.series + '×' + ex.reps}</div>
+            <div class="ex-summary">${st.peso ? st.peso + ' kg' : ser + '×' + ex.reps}</div>
             <div class="ex-chevron">⌄</div>
           </div>
           <div class="ex-body">
@@ -558,6 +596,13 @@ function renderDay() {
                   placeholder="—" value="${st.peso}"
                   oninput="saveField(${currentDay},${mIdx},${eIdx},'peso',this.value)"
                   id="inp-peso-${id}">
+              </div>
+              <div class="input-group">
+                <div class="input-lbl">Series</div>
+                <input class="num-input series-input" type="number" inputmode="numeric" min="0"
+                  placeholder="${ex.series}" value="${st.series || ''}"
+                  oninput="saveField(${currentDay},${mIdx},${eIdx},'series',this.value)"
+                  id="inp-series-${id}">
               </div>
               <div class="input-group">
                 <div class="input-lbl">Reps</div>
@@ -821,11 +866,12 @@ function updateMetrics(dayId, mIdx, eIdx) {
   const id = `e-${dayId}-${mIdx}-${eIdx}`;
   const st = getEx(currentWeek, dayId, mIdx, eIdx);
   const ex = PLAN[dayId-1].muscles[mIdx].exercises[eIdx];
+  const ser = actualSeries(ex, st);
 
-  const vol = calcVol(st.peso, st.reps, ex.series);
+  const vol = calcVol(st.peso, st.reps, ser);
   const rm = calc1RM(st.peso, st.reps, st.rir);
   const intens = calcInt(st.peso, rm);
-  const refEf = st.rir !== null ? calcRefEf(ex.series, st.reps, st.rir) : null;
+  const refEf = st.rir !== null ? calcRefEf(ser, st.reps, st.rir) : null;
 
   const el = (sid) => document.getElementById(sid);
   if (el(`m-vol-${id}`)) el(`m-vol-${id}`).textContent = vol ? fmt(vol) : '—';
@@ -840,6 +886,14 @@ function updateMetrics(dayId, mIdx, eIdx) {
   // Update day total
   const dVol = getDayVol(currentWeek, dayId);
   if (el('sv-vol')) el('sv-vol').textContent = dVol ? fmt(dVol) : '—';
+
+  // Update day series (solo las realmente marcadas)
+  const dSeries = getDaySeries(currentWeek, dayId);
+  if (el('sv-series')) el('sv-series').textContent = dSeries;
+
+  // Update day exercise count (solo los ejercicios realmente rellenados)
+  const dExCount = getDayExerciseCount(currentWeek, dayId);
+  if (el('sv-excount')) el('sv-excount').textContent = dExCount;
 }
 
 function switchDay(dayId) {
