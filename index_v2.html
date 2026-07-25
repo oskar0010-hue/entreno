@@ -53,7 +53,7 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; }
-body { background: var(--bg); font-family: 'DM Mono', monospace; color: var(--navy); overflow-x: hidden; padding-bottom: 70px; }
+body { background: var(--bg); font-family: 'DM Mono', monospace; color: var(--navy); overflow-x: hidden; padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
 
 /* ── NAV ── */
 .nav { position: sticky; top: 0; z-index: 200; background: var(--ink); padding: 0 16px; display: flex; align-items: center; gap: 10px; height: 48px; border-bottom: 1px solid var(--border); }
