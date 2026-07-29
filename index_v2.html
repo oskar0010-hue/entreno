@@ -308,76 +308,92 @@ const PLAN = [
   {id:1,label:"D1",sub:"Pecho · Hombro · Tríceps",muscles:[
     {name:"Pecho",color:"var(--pecho)",exercises:[
       {ord:1,name:"Press converging (máquina)",series:5,reps:"3–5",prev:"84",alt:false,rir:"1–2",note:"Asiento 4."},
-      {ord:2,name:"Press inclinado con mancuernas",series:5,reps:"8–10",prev:"72",alt:false,rir:"1–2",note:""},
-      {ord:3,name:"Aperturas (máquina / polea sentado)",series:5,reps:"9–12",prev:"66",alt:false,rir:"0–1",note:""},
+      {ord:1,name:"Press banca con barra",series:5,reps:"3–5",prev:"—",alt:true,rir:"1–2",note:"Alt. directa al converging: estímulo de fuerza comparable, A-tier en el ranking de Nippard."},
+      {ord:2,name:"Press inclinado con mancuernas",series:5,reps:"8–10",prev:"72",alt:false,rir:"1–2",note:"Banco 30–45°: más énfasis en pectoral clavicular (superior). Baja hasta sentir estiramiento."},
+      {ord:3,name:"Aperturas (máquina / polea sentado)",series:5,reps:"9–12",prev:"66",alt:false,rir:"0–1",note:"Codo con flexión fija todo el recorrido; el objetivo es el estiramiento, no subir peso."},
     ]},
     {name:"Hombro",color:"var(--hombro)",exercises:[
-      {ord:1,name:"Press máquina cerrado",series:5,reps:"5–6",prev:"54",alt:false,rir:"1–2",note:""},
-      {ord:2,name:"Elevación lateral en polea",series:5,reps:"10–12",prev:"4,5",alt:false,rir:"0–1",note:""},
+      {ord:1,name:"Press máquina cerrado",series:5,reps:"5–6",prev:"54",alt:false,rir:"1–2",note:"Máquina reduce la demanda estabilizadora vs. press libre: permite acercarte más al fallo con seguridad. No bloquees el codo con fuerza arriba."},
+      {ord:1,name:"Press mancuernas sentado",series:5,reps:"5–6",prev:"—",alt:true,rir:"1–2",note:"Fallback libre al press en máquina, curva de fuerza similar."},
+      {ord:2,name:"Elevación lateral en polea",series:5,reps:"10–12",prev:"4,5",alt:false,rir:"0–1",note:"Polea baja cruzando el cuerpo: tensión máxima con el brazo estirado, al contrario que la mancuerna (pierde tensión abajo)."},
     ]},
     {name:"Tríceps",color:"var(--triceps)",exercises:[
-      {ord:1,name:"Extensión overhead en polea alta",series:5,reps:"8–10",prev:"33",alt:false,rir:"0–1",note:""},
+      {ord:1,name:"Extensión overhead en polea alta",series:5,reps:"8–10",prev:"33",alt:false,rir:"0–1",note:"La posición overhead estira más la cabeza larga: en un estudio de 12 sem. generó +28% más crecimiento en esa cabeza que el pushdown (Nippard/Stronger by Science). Codos fijos."},
       {ord:2,name:"Fondos en paralelas",series:5,reps:"8–10",prev:"10kg lastrado",alt:false,rir:"1–2",note:"Multiarticular (hombro+codo): no llevar a fallo real."},
+      {ord:2,name:"Press banca agarre cerrado",series:5,reps:"8–10",prev:"—",alt:true,rir:"1–2",note:"Compuesto equivalente a fondos, sin el estrés específico de hombro de los paralelos."},
     ]},
   ]},
   {id:2,label:"D2",sub:"Espalda · Bíceps · Hombro post.",muscles:[
     {name:"Espalda",color:"var(--espalda)",exercises:[
       {ord:1,name:"Remo en máquina pecho apoyado",series:5,reps:"6–8",prev:"72",alt:false,rir:"1–2",note:"Pecho apoyado: la lumbar no estabiliza la carga."},
-      {ord:2,name:"Jalón al pecho agarre neutro abierto",series:5,reps:"10",prev:"63",alt:false,rir:"1–2",note:""},
-      {ord:3,name:"Remo en polea agarre cerrado",series:5,reps:"10–12",prev:"68",alt:false,rir:"1–2",note:""},
+      {ord:1,name:"Remo en T pecho apoyado",series:5,reps:"6–8",prev:"—",alt:true,rir:"1–2",note:"Mismo patrón chest-supported que Nippard sitúa como su mejor categoría de espalda."},
+      {ord:2,name:"Jalón al pecho agarre neutro abierto",series:5,reps:"10",prev:"63",alt:false,rir:"1–2",note:"Pecho arriba (extensión torácica); tira liderando con el codo/meñique, no con el bíceps."},
+      {ord:3,name:"Remo en polea agarre cerrado",series:5,reps:"10–12",prev:"68",alt:false,rir:"1–2",note:"Codos pegados al cuerpo, sin balanceo lumbar; controla la excéntrica 2–3s."},
     ]},
     {name:"Bíceps",color:"var(--biceps)",exercises:[
-      {ord:1,name:"Bíceps polea baja, una mano (Bayesian)",series:4,reps:"10",prev:"9",alt:false,rir:"0–1",note:"De espaldas a la polea, brazo detrás del torso."},
-      {ord:2,name:"Bíceps pecho apoyado en banco (preacher)",series:5,reps:"8–10",prev:"12",alt:false,rir:"0–1",note:""},
+      {ord:1,name:"Bíceps polea baja, una mano (Bayesian)",series:4,reps:"10",prev:"9",alt:false,rir:"0–1",note:"De espaldas a la polea, brazo detrás del torso: maximiza el estiramiento en la porción alta del recorrido."},
+      {ord:2,name:"Bíceps pecho apoyado en banco (preacher)",series:5,reps:"8–10",prev:"12",alt:false,rir:"0–1",note:"Ángulo 45°: máximo estiramiento en la porción baja del bíceps. Nippard lo sitúa top-tier junto al Bayesian."},
+      {ord:2,name:"Spider curl (banco inclinado prono)",series:5,reps:"8–10",prev:"—",alt:true,rir:"0–1",note:"S-tier: estiramiento profundo en cabeza corta, equivalente al preacher."},
     ]},
     {name:"Hombro post.",color:"var(--hombro)",exercises:[
-      {ord:1,name:"Hombro posterior en polea (reverse fly)",series:4,reps:"12–15",prev:"4,5",alt:false,rir:"0–1",note:""},
+      {ord:1,name:"Hombro posterior en polea (reverse fly)",series:4,reps:"12–15",prev:"4,5",alt:false,rir:"0–1",note:"Agarre neutro (palmas enfrentadas) activa más el deltoides posterior que el pronado. No retraigas escápula en exceso."},
+      {ord:1,name:"Face pull en polea",series:4,reps:"12–15",prev:"—",alt:true,rir:"0–1",note:"Nippard: da un \"gran estiramiento\" al deltoides posterior, mejor que el pájaro clásico."},
     ]},
   ]},
   {id:3,label:"D3",sub:"Cuádriceps · Femoral",muscles:[
     {name:"Cuádriceps",color:"var(--cuad)",exercises:[
       {ord:1,name:"Sentadilla libre profunda",series:5,reps:"3–5",prev:"125",alt:false,rir:"1–2",note:"Historial lumbar: no llevar a fallo real. 1RM est. 115 kg"},
+      {ord:1,name:"Prensa de piernas",series:5,reps:"6–8",prev:"—",alt:true,rir:"1–2",note:"Menor exigencia lumbar que la sentadilla libre (coincide con tu historial), movimiento guiado."},
       {ord:2,name:"Sentadilla Goblet",series:2,reps:"8–10",prev:"46",alt:false,rir:"1–2",note:"Serie de trabajo real, no calentamiento."},
-      {ord:3,name:"Extensiones",series:5,reps:"8–10",prev:"79",alt:false,rir:"0–1",note:""},
+      {ord:3,name:"Extensiones",series:5,reps:"8–10",prev:"79",alt:false,rir:"0–1",note:"Tira de los agarres para fijar el glúteo al asiento: si la cadera sube y baja, pierdes tensión en el cuádriceps."},
     ]},
     {name:"Femoral",color:"var(--fem)",exercises:[
-      {ord:4,name:"Femoral sentado",series:5,reps:"8–10",prev:"79",alt:false,rir:"0–1",note:""},
+      {ord:4,name:"Femoral sentado",series:5,reps:"8–10",prev:"79",alt:false,rir:"0–1",note:"Posición sentada = isquiotibial en mayor estiramiento; estudios muestran más hipertrofia proximal que la variante tumbada (~56% más en un estudio de 2021)."},
+      {ord:4,name:"RDL con mancuernas",series:5,reps:"8–10",prev:"—",alt:true,rir:"0–1",note:"Bisagra de cadera: estira el isquio en la porción distal, complementa el sesgo proximal del femoral sentado."},
       {ord:5,name:"Femoral tumbado",series:5,reps:"10–12",prev:"200",alt:false,rir:"0–1",note:"Sustituye a la prensa (esa trabaja cuádriceps/glúteo, no isquios)."},
     ]},
   ]},
   {id:4,label:"D4",sub:"Pecho · Hombro · Tríceps",muscles:[
     {name:"Pecho",color:"var(--pecho)",exercises:[
-      {ord:1,name:"Chest press (máquina)",series:3,reps:"8–10",prev:"63",alt:false,rir:"2 (últ. 1)",note:""},
-      {ord:2,name:"Aperturas (máquina/polea)",series:3,reps:"10–12",prev:"66",alt:false,rir:"2 (últ. 1)",note:""},
+      {ord:1,name:"Chest press (máquina)",series:3,reps:"8–10",prev:"63",alt:false,rir:"2 (últ. 1)",note:"RIR 2: prioriza ROM completo y técnica sobre subir carga, es día de menor volumen."},
+      {ord:1,name:"Press banca con mancuernas",series:3,reps:"8–10",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Fallback libre equivalente al chest press en máquina."},
+      {ord:2,name:"Aperturas (máquina/polea)",series:3,reps:"10–12",prev:"66",alt:false,rir:"2 (últ. 1)",note:"Codo con flexión fija; no dejes caer el codo para no perder tensión en pectoral."},
     ]},
     {name:"Hombro",color:"var(--hombro)",exercises:[
-      {ord:1,name:"Press con mancuernas",series:3,reps:"8–10",prev:"52",alt:false,rir:"2 (últ. 1)",note:""},
-      {ord:2,name:"Elevación lateral",series:3,reps:"10–12",prev:"—",alt:false,rir:"2 (últ. 1)",note:""},
+      {ord:1,name:"Press con mancuernas",series:3,reps:"8–10",prev:"52",alt:false,rir:"2 (últ. 1)",note:"Codos ligeramente por delante del torso, no en línea con los hombros: menos estrés articular en RIR bajo."},
+      {ord:1,name:"Press Arnold",series:3,reps:"8–10",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Buena valoración de Nippard por reclutamiento combinado anterior/lateral del deltoides."},
+      {ord:2,name:"Elevación lateral",series:3,reps:"10–12",prev:"—",alt:false,rir:"2 (últ. 1)",note:"Con mancuerna hay poca tensión abajo del recorrido; inclina algo el torso para mantener tensión constante."},
     ]},
     {name:"Tríceps",color:"var(--triceps)",exercises:[
-      {ord:1,name:"Press francés en polea (pushdown)",series:3,reps:"12–15",prev:"22",alt:false,rir:"2 (últ. 1)",note:""},
+      {ord:1,name:"Press francés en polea (pushdown)",series:3,reps:"12–15",prev:"22",alt:false,rir:"2 (últ. 1)",note:"El pushdown enfatiza cabezas lateral/medial; combina con la extensión overhead de D1 para la cabeza larga."},
+      {ord:1,name:"Extensión overhead a una mano (mancuerna)",series:3,reps:"12–15",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Variante unilateral de bajo fatiga que mantiene el sesgo de estiramiento de cabeza larga."},
     ]},
   ]},
   {id:5,label:"D5",sub:"Espalda · Bíceps · Hombro post.",muscles:[
     {name:"Espalda",color:"var(--espalda)",exercises:[
       {ord:1,name:"Pullover en polea",series:3,reps:"10–12",prev:"29",alt:false,rir:"2 (últ. 1)",note:"Aislamiento, sin implicar la lumbar."},
-      {ord:2,name:"Remo en polea alta, una mano",series:3,reps:"8–10",prev:"—",alt:false,rir:"2 (últ. 1)",note:""},
+      {ord:1,name:"Pullover con mancuerna",series:3,reps:"10–12",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Mismo estímulo de estiramiento del dorsal sin depender de la polea."},
+      {ord:2,name:"Remo en polea alta, una mano",series:3,reps:"8–10",prev:"—",alt:false,rir:"2 (últ. 1)",note:"Unilateral: mayor rango y rotación torácica; tira el codo hacia atrás, no hacia arriba."},
     ]},
     {name:"Bíceps",color:"var(--biceps)",exercises:[
-      {ord:1,name:"Bíceps polea baja, una mano",series:3,reps:"10",prev:"11",alt:false,rir:"2 (últ. 1)",note:""},
-      {ord:2,name:"Curl inclinado con mancuernas",series:3,reps:"8–10",prev:"12",alt:false,rir:"2 (últ. 1)",note:""},
+      {ord:1,name:"Bíceps polea baja, una mano",series:3,reps:"10",prev:"11",alt:false,rir:"2 (últ. 1)",note:"Variante Bayesian: brazo detrás del torso maximiza el estiramiento en la parte alta del recorrido."},
+      {ord:2,name:"Curl inclinado con mancuernas",series:3,reps:"8–10",prev:"12",alt:false,rir:"2 (últ. 1)",note:"Banco 45–60°: el hombro en extensión estira más la cabeza larga del bíceps que un curl de pie."},
+      {ord:2,name:"Curl de pie con barra Z",series:3,reps:"8–10",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Fallback simple; menor sesgo de estiramiento que el inclinado (trade-off asumido)."},
     ]},
     {name:"Hombro post.",color:"var(--hombro)",exercises:[
-      {ord:1,name:"Hombro posterior en máquina",series:3,reps:"12–15",prev:"59",alt:false,rir:"2 (últ. 1)",note:""},
+      {ord:1,name:"Hombro posterior en máquina",series:3,reps:"12–15",prev:"59",alt:false,rir:"2 (últ. 1)",note:"Agarre neutro (si la máquina lo permite) aísla mejor el deltoides posterior que el pronado."},
+      {ord:1,name:"Face pull en polea",series:3,reps:"12–15",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Mismo razonamiento que D2: gran estiramiento, bajo coste de fatiga para día RIR 2."},
     ]},
   ]},
   {id:6,label:"D6",sub:"Cuádriceps · Femoral",muscles:[
     {name:"Cuádriceps",color:"var(--cuad)",exercises:[
       {ord:1,name:"Hack squat (o sentadilla Smith/multipower)",series:3,reps:"8–10",prev:"82",alt:false,rir:"2 (últ. 1)",note:"Raíl guiado: menos exigencia lumbar que la libre."},
-      {ord:2,name:"Extensiones",series:3,reps:"10–12",prev:"79",alt:false,rir:"2 (últ. 1)",note:""},
+      {ord:1,name:"Prensa de piernas",series:3,reps:"10–12",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Misma lógica que D3: movimiento guiado, menos demanda lumbar."},
+      {ord:2,name:"Extensiones",series:3,reps:"10–12",prev:"79",alt:false,rir:"2 (últ. 1)",note:"Fija el glúteo al asiento tirando de los agarres; evita que la cadera suba y baja."},
     ]},
     {name:"Femoral",color:"var(--fem)",exercises:[
-      {ord:3,name:"Femoral sentado",series:3,reps:"10–12",prev:"79",alt:false,rir:"2 (últ. 1)",note:""},
+      {ord:3,name:"Femoral sentado",series:3,reps:"10–12",prev:"79",alt:false,rir:"2 (últ. 1)",note:"Posición sentada estira más el isquiotibial; más hipertrofia proximal que la variante tumbada."},
+      {ord:3,name:"RDL con barra",series:3,reps:"8–10",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Misma lógica que D3, variante con barra para dar variedad a la semana."},
       {ord:4,name:"Hip thrust",series:3,reps:"10–12",prev:"—",alt:false,rir:"2 (últ. 1)",note:"Apoyo en banco: columna neutra fácil."},
     ]},
   ]},
