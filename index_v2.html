@@ -353,39 +353,26 @@ const PLAN = [
       {ord:5,name:"Femoral tumbado",series:5,reps:"10–12",prev:"200",alt:false,rir:"0–1",note:"Sustituye a la prensa (esa trabaja cuádriceps/glúteo, no isquios)."},
     ]},
   ]},
-  {id:4,label:"D4",sub:"Pecho · Hombro · Tríceps",muscles:[
+  {id:4,label:"D4",sub:"Pecho · Espalda · Hombro",muscles:[
     {name:"Pecho",color:"var(--pecho)",exercises:[
       {ord:1,name:"Chest press (máquina)",series:3,reps:"8–10",prev:"63",alt:false,rir:"2 (últ. 1)",note:"RIR 2: prioriza ROM completo y técnica sobre subir carga, es día de menor volumen."},
       {ord:1,name:"Press banca con mancuernas",series:3,reps:"8–10",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Fallback libre equivalente al chest press en máquina."},
       {ord:2,name:"Aperturas (máquina/polea)",series:3,reps:"10–12",prev:"66",alt:false,rir:"2 (últ. 1)",note:"Codo con flexión fija; no dejes caer el codo para no perder tensión en pectoral."},
     ]},
-    {name:"Hombro",color:"var(--hombro)",exercises:[
-      {ord:1,name:"Press con mancuernas",series:3,reps:"8–10",prev:"52",alt:false,rir:"2 (últ. 1)",note:"Codos ligeramente por delante del torso, no en línea con los hombros: menos estrés articular en RIR bajo."},
-      {ord:1,name:"Press Arnold",series:3,reps:"8–10",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Buena valoración de Nippard por reclutamiento combinado anterior/lateral del deltoides."},
-      {ord:2,name:"Elevación lateral",series:3,reps:"10–12",prev:"—",alt:false,rir:"2 (últ. 1)",note:"Con mancuerna hay poca tensión abajo del recorrido; inclina algo el torso para mantener tensión constante."},
-    ]},
-    {name:"Tríceps",color:"var(--triceps)",exercises:[
-      {ord:1,name:"Press francés en polea (pushdown)",series:3,reps:"12–15",prev:"22",alt:false,rir:"2 (últ. 1)",note:"El pushdown enfatiza cabezas lateral/medial; combina con la extensión overhead de D1 para la cabeza larga."},
-      {ord:1,name:"Extensión overhead a una mano (mancuerna)",series:3,reps:"12–15",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Variante unilateral de bajo fatiga que mantiene el sesgo de estiramiento de cabeza larga."},
-    ]},
-  ]},
-  {id:5,label:"D5",sub:"Espalda · Bíceps · Hombro post.",muscles:[
     {name:"Espalda",color:"var(--espalda)",exercises:[
       {ord:1,name:"Pullover en polea",series:3,reps:"10–12",prev:"29",alt:false,rir:"2 (últ. 1)",note:"Aislamiento, sin implicar la lumbar."},
       {ord:1,name:"Pullover con mancuerna",series:3,reps:"10–12",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Mismo estímulo de estiramiento del dorsal sin depender de la polea."},
       {ord:2,name:"Remo en polea alta, una mano",series:3,reps:"8–10",prev:"—",alt:false,rir:"2 (últ. 1)",note:"Unilateral: mayor rango y rotación torácica; tira el codo hacia atrás, no hacia arriba."},
     ]},
-    {name:"Bíceps",color:"var(--biceps)",exercises:[
-      {ord:1,name:"Bíceps polea baja, una mano",series:3,reps:"10",prev:"11",alt:false,rir:"2 (últ. 1)",note:"Variante Bayesian: brazo detrás del torso maximiza el estiramiento en la parte alta del recorrido."},
-      {ord:2,name:"Curl inclinado con mancuernas",series:3,reps:"8–10",prev:"12",alt:false,rir:"2 (últ. 1)",note:"Banco 45–60°: el hombro en extensión estira más la cabeza larga del bíceps que un curl de pie."},
-      {ord:2,name:"Curl de pie con barra Z",series:3,reps:"8–10",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Fallback simple; menor sesgo de estiramiento que el inclinado (trade-off asumido)."},
-    ]},
-    {name:"Hombro post.",color:"var(--hombro)",exercises:[
-      {ord:1,name:"Hombro posterior en máquina",series:3,reps:"12–15",prev:"59",alt:false,rir:"2 (últ. 1)",note:"Agarre neutro (si la máquina lo permite) aísla mejor el deltoides posterior que el pronado."},
-      {ord:1,name:"Face pull en polea",series:3,reps:"12–15",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Mismo razonamiento que D2: gran estiramiento, bajo coste de fatiga para día RIR 2."},
+    {name:"Hombro",color:"var(--hombro)",exercises:[
+      {ord:1,name:"Press con mancuernas",series:3,reps:"8–10",prev:"52",alt:false,rir:"2 (últ. 1)",note:"Codos ligeramente por delante del torso, no en línea con los hombros: menos estrés articular en RIR bajo."},
+      {ord:1,name:"Press Arnold",series:3,reps:"8–10",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Buena valoración de Nippard por reclutamiento combinado anterior/lateral del deltoides."},
+      {ord:2,name:"Elevación lateral",series:3,reps:"10–12",prev:"—",alt:false,rir:"2 (últ. 1)",note:"Con mancuerna hay poca tensión abajo del recorrido; inclina algo el torso para mantener tensión constante."},
+      {ord:3,name:"Hombro posterior en máquina",series:3,reps:"12–15",prev:"59",alt:false,rir:"2 (últ. 1)",note:"Agarre neutro (si la máquina lo permite) aísla mejor el deltoides posterior que el pronado."},
+      {ord:3,name:"Face pull en polea",series:3,reps:"12–15",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Mismo razonamiento que D2: gran estiramiento, bajo coste de fatiga para día RIR 2."},
     ]},
   ]},
-  {id:6,label:"D6",sub:"Cuádriceps · Femoral",muscles:[
+  {id:5,label:"D5",sub:"Piernas · Bíceps · Tríceps",muscles:[
     {name:"Cuádriceps",color:"var(--cuad)",exercises:[
       {ord:1,name:"Hack squat (o sentadilla Smith/multipower)",series:3,reps:"8–10",prev:"82",alt:false,rir:"2 (últ. 1)",note:"Raíl guiado: menos exigencia lumbar que la libre."},
       {ord:1,name:"Prensa de piernas",series:3,reps:"10–12",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Misma lógica que D3: movimiento guiado, menos demanda lumbar."},
@@ -396,12 +383,35 @@ const PLAN = [
       {ord:3,name:"RDL con barra",series:3,reps:"8–10",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Misma lógica que D3, variante con barra para dar variedad a la semana."},
       {ord:4,name:"Hip thrust",series:3,reps:"10–12",prev:"—",alt:false,rir:"2 (últ. 1)",note:"Apoyo en banco: columna neutra fácil."},
     ]},
+    {name:"Bíceps",color:"var(--biceps)",exercises:[
+      {ord:1,name:"Bíceps polea baja, una mano",series:3,reps:"10",prev:"11",alt:false,rir:"2 (últ. 1)",note:"Variante Bayesian: brazo detrás del torso maximiza el estiramiento en la parte alta del recorrido."},
+      {ord:2,name:"Curl inclinado con mancuernas",series:3,reps:"8–10",prev:"12",alt:false,rir:"2 (últ. 1)",note:"Banco 45–60°: el hombro en extensión estira más la cabeza larga del bíceps que un curl de pie."},
+      {ord:2,name:"Curl de pie con barra Z",series:3,reps:"8–10",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Fallback simple; menor sesgo de estiramiento que el inclinado (trade-off asumido)."},
+    ]},
+    {name:"Tríceps",color:"var(--triceps)",exercises:[
+      {ord:1,name:"Press francés en polea (pushdown)",series:3,reps:"12–15",prev:"22",alt:false,rir:"2 (últ. 1)",note:"El pushdown enfatiza cabezas lateral/medial; combina con la extensión overhead de D1 para la cabeza larga."},
+      {ord:1,name:"Extensión overhead a una mano (mancuerna)",series:3,reps:"12–15",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Variante unilateral de bajo fatiga que mantiene el sesgo de estiramiento de cabeza larga."},
+    ]},
   ]},
 ];
 
 // ── STATE ────────────────────────────────────────────────────────────────────
-let currentWeek = 1;
-let currentDay = 1;
+// Recuerda la última semana/día visitados (evita que al reabrir la app desde
+// segundo plano vuelva siempre a S01/D1 y se apunte por error en el día equivocado).
+function getLastPosition() {
+  try {
+    const p = JSON.parse(localStorage.getItem('gym_v2_pos') || '{}');
+    return { week: p.week || 1, day: p.day || 1 };
+  } catch { return { week: 1, day: 1 }; }
+}
+function saveLastPosition() {
+  localStorage.setItem('gym_v2_pos', JSON.stringify({ week: currentWeek, day: currentDay }));
+}
+
+const __lastPos = getLastPosition();
+let currentWeek = __lastPos.week;
+// Si el día guardado ya no existe en el PLAN (p.ej. tras una reestructuración de la rutina), vuelve a D1.
+let currentDay = (__lastPos.day >= 1 && __lastPos.day <= PLAN.length) ? __lastPos.day : 1;
 let currentView = 'day';
 
 function getState() {
@@ -589,7 +599,7 @@ function renderDay() {
       const rirLabels = ['Al fallo','RIR 1','RIR 2','RIR 3','RIR 4+'];
 
       html += `
-        <div class="ex-card open${hasData ? ' has-data' : ''}" id="${id}">
+        <div class="ex-card${hasData ? ' has-data' : ''}" id="${id}">
           <div class="ex-top" onclick="toggleEx('${id}')">
             <div class="ex-ord" style="background:${muscle.color}22;color:${muscle.color}">${ex.ord}</div>
             <div class="ex-name">${ex.name}${ex.alt ? ' <span class="ex-alt-tag">ALT</span>' : ''}</div>
@@ -935,6 +945,7 @@ function updateMetrics(dayId, mIdx, eIdx) {
 
 function switchDay(dayId) {
   currentDay = dayId;
+  saveLastPosition();
   renderTabs();
   renderDay();
 }
@@ -987,6 +998,7 @@ function closeWeekModal(e) {
 
 function selectWeek(w, btn) {
   currentWeek = w;
+  saveLastPosition();
   document.querySelectorAll('.wk-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderTabs();
@@ -1033,6 +1045,7 @@ function importData(event) {
 function clearAllData() {
   if (confirm('¿Borrar todos los datos? Esta acción no se puede deshacer.')) {
     localStorage.removeItem('gym_v2');
+    localStorage.removeItem('gym_v2_pos');
     showToast('✓ Datos borrados');
     renderDay();
     renderHistorial();
