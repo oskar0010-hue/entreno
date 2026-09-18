@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Stronger</title>
+
+<!-- PWA: iOS -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stronger">
+<meta name="theme-color" content="#000000">
+<link id="pwa-manifest" rel="manifest">
+<link id="pwa-icon" rel="apple-touch-icon">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap');
+
+:root {
+  --bg: #000000;
+  --white: #1c1c1e;
+  --surface: #232326;
+  --border: #313133;
+  --border2: #48484a;
+  --navy: #ffffff;
+  --navy2: #98989d;
+  --ink: #000000;
+  --muted: #6c6c70;
+  --muted2: #8e8e93;
+  --blue: #0a84ff;
+  --blue-light: #0e2440;
+  --green: #30d158;
+  --green-light: #0f2c18;
+  --amber: #ff9f0a;
+  --amber-light: #3a2508;
+  --red: #ff453a;
+  --red-light: #3a1210;
+  --purple: #bf5af2;
+  --purple-light: #2b1640;
+  --pink: #ff375f;
+  --pink-light: #3a0f1c;
+  --pecho: #ff9f0a;
+  --espalda: #64d2ff;
+  --hombro: #bf5af2;
+  --triceps: #ff375f;
+  --biceps: #30d158;
+  --cuad: #ffd60a;
+  --fem: #ff453a;
+  --r: 10px;
+  --r2: 14px;
+  --shadow: none;
+  --shadow2: 0 12px 32px rgba(0,0,0,0.6);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { min-height: 100%; }
+body { background: var(--bg); font-family: 'DM Mono', monospace; color: var(--navy); overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
+
+/* ── NAV ── */
+.nav { position: sticky; top: 0; z-index: 200; background: var(--ink); padding: env(safe-area-inset-top, 0px) 16px 0; display: flex; align-items: center; gap: 10px; height: calc(48px + env(safe-area-inset-top, 0px)); border-bottom: 1px solid var(--border); }
+.nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 17px; color: white; letter-spacing: -0.3px; }
+.nav-logo span { color: var(--pecho); }
+.nav-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.nav-btn { background: var(--surface); border: 1px solid var(--border2); color: white; font-family: 'DM Mono', monospace; font-size: 11px; padding: 5px 9px; border-radius: 7px; cursor: pointer; white-space: nowrap; }
+.nav-btn:hover { background: var(--border); }
+.nav-btn.accent { background: var(--blue); border-color: var(--blue); }
+.week-pill { background: var(--surface); border: 1px solid var(--border2); color: white; font-size: 11px; padding: 5px 11px; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+.week-pill strong { color: var(--blue); }
+
+/* ── TABS (segmented pill switcher) ── */
+.tabs-wrap { background: var(--bg); border-bottom: 1px solid var(--border); position: sticky; top: calc(48px + env(safe-area-inset-top, 0px)); z-index: 190; padding: 8px 10px; }
+.tabs { display: flex; overflow-x: auto; scrollbar-width: none; gap: 3px; background: var(--surface); border-radius: 10px; padding: 3px; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex-shrink: 0; flex: 1; padding: 8px 12px; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--navy2); border: none; background: transparent; cursor: pointer; border-radius: 8px; transition: all 0.15s; white-space: nowrap; }
+.tab.active { color: var(--navy); background: var(--border2); font-weight: 600; }
+
+/* ── MAIN VIEWS ── */
+.view { display: none; padding: 12px 10px; max-width: 640px; margin: 0 auto; }
+.view.active { display: block; }
+
+/* ── STATS ROW ── */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px; }
+.stat-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r); padding: 10px 6px; text-align: center; }
+.stat-card:first-child { grid-column: span 2; text-align: left; padding: 12px 14px; border-left: 4px solid var(--blue); }
+.stat-val { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--navy); }
+.stat-card:first-child .stat-val { font-size: 26px; }
+.stat-lbl { font-size: 8.5px; color: var(--navy2); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ── MUSCLE SECTION ── */
+.muscle-section { margin-bottom: 10px; }
+.muscle-hdr { display: flex; align-items: center; gap: 7px; padding: 7px 10px; }
+.muscle-dot { width: 16px; height: 16px; border-radius: 6px; flex-shrink: 0; opacity: 0.85; }
+.muscle-name { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.muscle-vol-lbl { margin-left: auto; font-size: 9px; color: var(--navy2); }
+.muscle-vol-val { font-size: 10px; font-weight: 600; color: var(--navy); margin-left: 4px; }
+
+/* ── EXERCISE ROW (expandible, estilo hoja de registro) ── */
+.ex-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 6px; }
+.ex-top { display: flex; align-items: center; gap: 7px; padding: 9px 10px 6px; cursor: pointer; }
+.ex-ord { width: 22px; height: 22px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; flex-shrink: 0; }
+.ex-name { font-size: 12.5px; color: var(--navy); flex: 1; line-height: 1.25; font-weight: 500; }
+.ex-alt-tag { font-size: 8.5px; padding: 3px 7px; border-radius: 20px; background: var(--blue); color: white; font-weight: 700; flex-shrink: 0; }
+.ex-rir-badge { font-size: 8.5px; padding: 3px 7px; border-radius: 20px; background: var(--amber-light); color: var(--amber); font-weight: 700; flex-shrink: 0; white-space: nowrap; }
+.ex-summary { display: none; }
+.ex-chevron { font-size: 13px; color: var(--navy2); flex-shrink: 0; transition: transform 0.2s; }
+.ex-card.open .ex-chevron { transform: rotate(180deg); }
+
+/* ── EX BODY: expandible ── */
+.ex-body { display: none; padding: 0 10px 10px; }
+.ex-card.open .ex-body { display: block; }
+
+.prev-row { display: flex; align-items: center; gap: 6px; padding: 0 0 6px; font-size: 10px; color: var(--navy2); }
+.prev-val { color: var(--navy2); font-weight: 500; margin-left: auto; }
+
+/* ── MINI HISTORY (sparkline + nota sesión anterior, dentro de la tarjeta) ── */
+.mini-hist { margin-bottom: 6px; }
+.mini-hist-chart { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 6px 2px 2px; margin-bottom: 6px; }
+.mini-hist-empty { font-size: 10px; color: var(--navy2); text-align: center; padding: 10px 0; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 6px; }
+.prev-note-box { font-size: 11px; line-height: 1.4; color: var(--navy2); padding: 7px 9px; background: var(--bg); border-left: 2px solid var(--blue); border-radius: 6px; margin-bottom: 8px; }
+.prev-note-lbl { display: block; font-size: 8px; color: var(--muted2); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
+
+/* ── INPUT GRID (fila densa tipo hoja de registro) ── */
+.input-grid { display: grid; grid-template-columns: 1.2fr 0.8fr 0.8fr 0.8fr; gap: 5px; margin-bottom: 6px; }
+.input-lbl { font-size: 8px; color: var(--navy2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px; text-align: center; }
+.num-input { width: 100%; background: var(--bg); border: 1.5px solid var(--border2); border-radius: 8px; color: var(--navy); font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; text-align: center; padding: 8px 4px; -moz-appearance: textfield; transition: border-color 0.15s, background 0.15s; }
+.num-input::-webkit-outer-spin-button, .num-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.num-input:focus { outline: none; }
+.num-input.peso-input:focus { border-color: var(--blue); background: var(--blue-light); }
+.num-input.series-input:focus { border-color: var(--blue); background: var(--blue-light); }
+.num-input.reps-input:focus { border-color: var(--blue); background: var(--blue-light); }
+.num-input.rir-input:focus { border-color: var(--amber); background: var(--amber-light); }
+.num-input.rir-input { color: var(--amber); }
+
+/* ── METRICS: tira compacta en una línea ── */
+.metrics-grid { display: flex; gap: 4px; margin-bottom: 6px; }
+.metric-card { flex: 1; border-radius: 7px; padding: 5px 2px; text-align: center; }
+.metric-val { font-size: 11px; font-weight: 700; }
+.metric-lbl { font-size: 7.5px; margin-top: 1px; text-transform: uppercase; letter-spacing: 0.03em; opacity: 0.75; }
+.m-vol { background: var(--surface); color: var(--navy); }
+.m-1rm { background: var(--green-light); color: var(--green); }
+.m-int { background: var(--purple-light); color: var(--purple); }
+.m-ref { background: var(--pink-light); color: var(--pink); }
+
+/* ── DELTA ── */
+.delta-row { display: flex; align-items: center; justify-content: space-between; padding: 5px 8px; background: var(--surface); border-radius: 7px; margin-bottom: 6px; font-size: 10px; color: var(--navy2); }
+.delta-val { font-weight: 700; font-size: 11px; }
+.delta-pos { color: var(--green); }
+.delta-neg { color: var(--red); }
+.delta-zero { color: var(--navy2); }
+
+/* ── RIR BUTTONS: chips pequeños ── */
+.rir-wrap { margin-bottom: 4px; }
+.rir-lbl { display: none; }
+.rir-btns { display: flex; gap: 4px; flex-wrap: wrap; }
+.rir-btn { padding: 5px 9px; border-radius: 14px; font-size: 10px; font-family: 'DM Mono', monospace; border: 1.5px solid var(--border2); background: var(--bg); color: var(--navy2); cursor: pointer; transition: all 0.12s; }
+.rir-btn.active { border-color: var(--amber); color: #1a1300; background: var(--amber); font-weight: 700; }
+
+/* ── NOTES ── */
+.notes-input { width: 100%; background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; color: var(--navy); font-family: 'DM Mono', monospace; font-size: 11px; padding: 6px 9px; resize: none; min-height: 34px; margin-top: 6px; }
+.notes-input:focus { outline: none; border-color: var(--border2); }
+
+/* ── CHART ── */
+.chart-toggle { width: 100%; background: var(--white); border: 1px solid var(--border); border-radius: var(--r); padding: 9px 12px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--navy2); cursor: pointer; }
+.chart-toggle-arrow { font-size: 13px; transition: transform 0.2s; color: var(--blue); }
+.chart-toggle.open .chart-toggle-arrow { transform: rotate(180deg); }
+.chart-wrap { display: none; background: var(--white); border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--r) var(--r); padding: 12px 8px 6px; margin-top: -12px; margin-bottom: 12px; }
+.chart-wrap.open { display: block; }
+.chart-wrap text { font-family: 'DM Mono', monospace; }
+
+/* ── HISTORY VIEW (memoria de ejercicios) ── */
+.hist-section { margin-bottom: 18px; }
+.hist-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 8px; padding-bottom: 5px; border-bottom: 2px solid var(--border); }
+.hist-table { width: 100%; background: var(--white); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; margin-bottom: 10px; }
+.hist-table-hdr { display: grid; grid-template-columns: 46px repeat(3, 1fr); gap: 0; background: var(--ink); }
+.hist-table-hdr span { padding: 8px 5px; font-size: 8.5px; color: rgba(255,255,255,0.6); text-align: center; text-transform: uppercase; letter-spacing: 0.04em; }
+.hist-table-hdr span:first-child { text-align: left; padding-left: 9px; }
+.hist-row { display: grid; grid-template-columns: 46px repeat(3, 1fr); border-bottom: 1px solid var(--border); }
+.hist-row:last-child { border-bottom: none; }
+.hist-cell { padding: 8px 5px; font-size: 11px; text-align: center; color: var(--navy2); }
+.hist-cell:first-child { text-align: left; padding-left: 9px; color: var(--navy); font-weight: 500; }
+.hist-cell.best { color: var(--green); font-weight: 700; }
+.hist-cell.up { color: var(--green); }
+.hist-cell.down { color: var(--red); }
+.hist-week-badge { display: inline-block; font-size: 8.5px; padding: 2px 7px; border-radius: 20px; background: var(--blue); color: white; font-weight: 700; margin-right: 4px; }
+.hist-block { background: var(--white); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 10px; overflow: hidden; }
+.hist-block-hdr { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: var(--ink); cursor: pointer; user-select: none; }
+.hist-block-name { font-size: 12px; font-weight: 700; }
+.hist-block-summary { display: flex; align-items: center; gap: 7px; font-family: 'DM Mono', monospace; font-size: 11.5px; color: white; }
+.hist-toggle-arrow { font-size: 13px; transition: transform 0.2s; color: var(--blue); }
+.hist-block-hdr.open .hist-toggle-arrow { transform: rotate(180deg); }
+.hist-block-body { display: none; padding: 10px; }
+.hist-block-body.open { display: block; }
+.hist-block-body .hist-table { border: none; border-radius: 0; margin-bottom: 8px; }
+
+/* ── WEEK MODAL ── */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 500; align-items: flex-end; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--white); border: 1px solid var(--border); border-bottom: none; border-radius: 18px 18px 0 0; width: 100%; max-width: 640px; padding: 18px 18px 30px; }
+.modal-handle { width: 34px; height: 4px; background: var(--border2); border-radius: 2px; margin: 0 auto 14px; }
+.modal h3 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 12px; color: var(--navy); }
+.modal-weeks { display: grid; grid-template-columns: repeat(6, 1fr); gap: 7px; margin-bottom: 14px; }
+.wk-btn { padding: 9px 4px; border-radius: 9px; border: 1.5px solid var(--border2); background: var(--surface); color: var(--navy2); font-family: 'DM Mono', monospace; font-size: 11px; cursor: pointer; text-align: center; }
+.wk-btn.active { border-color: var(--blue); color: var(--blue); background: var(--blue-light); font-weight: 600; }
+.wk-btn.has-data { border-color: var(--navy2); color: var(--navy); }
+.modal-actions { display: flex; gap: 9px; }
+.modal-btn { flex: 1; padding: 12px; border-radius: 11px; font-family: 'DM Mono', monospace; font-size: 12px; cursor: pointer; border: 1.5px solid var(--border2); }
+.modal-btn.primary { background: var(--blue); color: white; border-color: var(--blue); font-weight: 600; }
+.modal-btn.secondary { background: var(--surface); color: var(--navy2); }
+
+/* ── EXPORT/IMPORT PANEL ── */
+.io-panel { background: var(--white); border: 1px solid var(--border); border-radius: var(--r2); padding: 14px; margin-bottom: 12px; }
+.io-panel h4 { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; margin-bottom: 5px; color: var(--navy); }
+.io-panel p { font-size: 10.5px; color: var(--navy2); margin-bottom: 10px; line-height: 1.5; }
+.io-btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 14px; border-radius: 9px; font-family: 'DM Mono', monospace; font-size: 11.5px; font-weight: 600; cursor: pointer; border: none; }
+.io-btn.export { background: var(--ink); color: white; border: 1px solid var(--border2); }
+.io-btn.import { background: var(--blue-light); color: var(--blue); border: 1.5px solid var(--blue); }
+.io-btn.danger { background: var(--red-light); color: var(--red); border: 1.5px solid var(--red); }
+.io-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ── TOAST ── */
+.toast { position: fixed; bottom: 86px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ink); color: white; padding: 9px 18px; border-radius: 18px; font-size: 11px; z-index: 999; transition: transform 0.3s; border: 1px solid var(--border2); white-space: nowrap; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ── EMPTY STATE ── */
+.empty { text-align: center; padding: 36px 18px; color: var(--navy2); }
+.empty-icon { font-size: 28px; margin-bottom: 6px; }
+.empty p { font-size: 11px; }
+
+/* ── SERIES TARGET ── */
+.obj-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; background: var(--ink); border-radius: 8px; margin-bottom: 7px; border: 1px solid var(--border2); }
+.obj-lbl { font-size: 9px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.06em; }
+.obj-val { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 800; color: white; letter-spacing: -0.3px; }
+.obj-reps { font-size: 10px; color: rgba(255,255,255,0.6); margin-left: 4px; }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: var(--ink); border-top: 1px solid var(--border); display: flex; z-index: 210; padding-bottom: env(safe-area-inset-bottom); }
+.bnav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; background: none; border: none; color: var(--navy2); cursor: pointer; font-family: 'DM Mono', monospace; font-size: 10px; }
+.bnav-btn.active { color: var(--blue); }
+.bnav-btn svg { width: 20px; height: 20px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">STRONGER</div>
+  <div class="nav-right">
+    <div class="week-pill" onclick="openWeekModal()">
+      Semana <strong id="nav-week">S01</strong> ▾
+    </div>
+    <button class="nav-btn accent" onclick="showView('historial')">Historial</button>
+  </div>
+</nav>
+
+<!-- DAY TABS -->
+<div class="tabs-wrap">
+  <div class="tabs" id="day-tabs"></div>
+</div>
+
+<!-- VIEWS -->
+<div class="view active" id="view-day"></div>
+<div class="view" id="view-historial">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--navy)">Historial</div>
+    <button class="nav-btn" onclick="showView('day')" style="background:var(--border);color:var(--navy2)">← Volver</button>
+  </div>
+
+  <div class="io-panel">
+    <h4>Exportar / Importar datos</h4>
+    <p>Exporta tus datos como JSON para hacer copia de seguridad. Impórtalos si cambias de dispositivo o navegador.</p>
+    <div class="io-row">
+      <button class="io-btn export" onclick="exportData()">↓ Exportar JSON</button>
+      <label class="io-btn import" style="cursor:pointer">
+        ↑ Importar JSON
+        <input type="file" accept=".json" style="display:none" onchange="importData(event)">
+      </label>
+      <button class="io-btn danger" onclick="clearAllData()">✕ Borrar todo</button>
+    </div>
+  </div>
+
+  <div id="hist-content"></div>
+</div>
+
+<!-- WEEK MODAL -->
+<div class="modal-overlay" id="week-modal" onclick="closeWeekModal(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3>Seleccionar semana</h3>
+    <div class="modal-weeks" id="modal-weeks"></div>
+    <div class="modal-actions">
+      <button class="modal-btn secondary" onclick="closeWeekModal()">Cancelar</button>
+      <button class="modal-btn primary" onclick="closeWeekModal()">Listo</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="bnav-btn active" id="bnav-day" onclick="showView('day');document.getElementById('bnav-day').classList.add('active');document.getElementById('bnav-hist').classList.remove('active')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="12" r="2.5"/><line x1="8.5" y1="12" x2="15.5" y2="12"/><line x1="4" y1="9" x2="4" y2="15"/><line x1="20" y1="9" x2="20" y2="15"/></svg>
+    Hoy
+  </button>
+  <button class="bnav-btn" id="bnav-hist" onclick="showView('historial');document.getElementById('bnav-hist').classList.add('active');document.getElementById('bnav-day').classList.remove('active')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>
+    Historial
+  </button>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── PLAN ────────────────────────────────────────────────────────────────────
+const PLAN = [
+  {id:1,label:"D1",sub:"Pecho · Hombro · Tríceps",muscles:[
+    {name:"Pecho",color:"var(--pecho)",exercises:[
+      {ord:1,name:"Press converging (máquina)",series:5,reps:"3–5",prev:"84",alt:false,rir:"1–2",note:"Asiento 4."},
+      {ord:1,name:"Press banca con barra",series:5,reps:"3–5",prev:"—",alt:true,rir:"1–2",note:"Alt. directa al converging: estímulo de fuerza comparable, A-tier en el ranking de Nippard."},
+      {ord:2,name:"Press inclinado con mancuernas",series:5,reps:"8–10",prev:"72",alt:false,rir:"1–2",note:"Banco 30–45°: más énfasis en pectoral clavicular (superior). Baja hasta sentir estiramiento."},
+      {ord:3,name:"Aperturas (máquina / polea sentado)",series:5,reps:"9–12",prev:"66",alt:false,rir:"0–1",note:"Codo con flexión fija todo el recorrido; el objetivo es el estiramiento, no subir peso."},
+    ]},
+    {name:"Hombro",color:"var(--hombro)",exercises:[
+      {ord:1,name:"Press máquina cerrado",series:5,reps:"5–6",prev:"54",alt:false,rir:"1–2",note:"Máquina reduce la demanda estabilizadora vs. press libre: permite acercarte más al fallo con seguridad. No bloquees el codo con fuerza arriba."},
+      {ord:1,name:"Press mancuernas sentado",series:5,reps:"5–6",prev:"—",alt:true,rir:"1–2",note:"Fallback libre al press en máquina, curva de fuerza similar."},
+      {ord:2,name:"Elevación lateral en polea",series:5,reps:"10–12",prev:"4,5",alt:false,rir:"0–1",note:"Polea baja cruzando el cuerpo: tensión máxima con el brazo estirado, al contrario que la mancuerna (pierde tensión abajo)."},
+    ]},
+    {name:"Tríceps",color:"var(--triceps)",exercises:[
+      {ord:1,name:"Extensión overhead en polea alta",series:5,reps:"8–10",prev:"33",alt:false,rir:"0–1",note:"La posición overhead estira más la cabeza larga: en un estudio de 12 sem. generó +28% más crecimiento en esa cabeza que el pushdown (Nippard/Stronger by Science). Codos fijos."},
+      {ord:2,name:"Fondos en paralelas",series:5,reps:"8–10",prev:"10kg lastrado",alt:false,rir:"1–2",note:"Multiarticular (hombro+codo): no llevar a fallo real."},
+      {ord:2,name:"Press banca agarre cerrado",series:5,reps:"8–10",prev:"—",alt:true,rir:"1–2",note:"Compuesto equivalente a fondos, sin el estrés específico de hombro de los paralelos."},
+    ]},
+  ]},
+  {id:2,label:"D2",sub:"Espalda · Bíceps · Hombro post.",muscles:[
+    {name:"Espalda",color:"var(--espalda)",exercises:[
+      {ord:1,name:"Remo en máquina pecho apoyado",series:5,reps:"6–8",prev:"72",alt:false,rir:"1–2",note:"Pecho apoyado: la lumbar no estabiliza la carga."},
+      {ord:1,name:"Remo en T pecho apoyado",series:5,reps:"6–8",prev:"—",alt:true,rir:"1–2",note:"Mismo patrón chest-supported que Nippard sitúa como su mejor categoría de espalda."},
+      {ord:2,name:"Jalón al pecho agarre neutro abierto",series:5,reps:"10",prev:"63",alt:false,rir:"1–2",note:"Pecho arriba (extensión torácica); tira liderando con el codo/meñique, no con el bíceps."},
+      {ord:3,name:"Remo en polea agarre cerrado",series:5,reps:"10–12",prev:"68",alt:false,rir:"1–2",note:"Codos pegados al cuerpo, sin balanceo lumbar; controla la excéntrica 2–3s."},
+    ]},
+    {name:"Bíceps",color:"var(--biceps)",exercises:[
+      {ord:1,name:"Bíceps polea baja, una mano (Bayesian)",series:4,reps:"10",prev:"9",alt:false,rir:"0–1",note:"De espaldas a la polea, brazo detrás del torso: maximiza el estiramiento en la porción alta del recorrido."},
+      {ord:2,name:"Bíceps pecho apoyado en banco (preacher)",series:5,reps:"8–10",prev:"12",alt:false,rir:"0–1",note:"Ángulo 45°: máximo estiramiento en la porción baja del bíceps. Nippard lo sitúa top-tier junto al Bayesian."},
+      {ord:2,name:"Spider curl (banco inclinado prono)",series:5,reps:"8–10",prev:"—",alt:true,rir:"0–1",note:"S-tier: estiramiento profundo en cabeza corta, equivalente al preacher."},
+    ]},
+    {name:"Hombro post.",color:"var(--hombro)",exercises:[
+      {ord:1,name:"Hombro posterior en polea (reverse fly)",series:4,reps:"12–15",prev:"4,5",alt:false,rir:"0–1",note:"Agarre neutro (palmas enfrentadas) activa más el deltoides posterior que el pronado. No retraigas escápula en exceso."},
+      {ord:1,name:"Face pull en polea",series:4,reps:"12–15",prev:"—",alt:true,rir:"0–1",note:"Nippard: da un \"gran estiramiento\" al deltoides posterior, mejor que el pájaro clásico."},
+    ]},
+  ]},
+  {id:3,label:"D3",sub:"Cuádriceps · Femoral",muscles:[
+    {name:"Cuádriceps",color:"var(--cuad)",exercises:[
+      {ord:1,name:"Sentadilla libre profunda",series:5,reps:"3–5",prev:"125",alt:false,rir:"1–2",note:"Historial lumbar: no llevar a fallo real. 1RM est. 115 kg"},
+      {ord:1,name:"Prensa de piernas",series:5,reps:"6–8",prev:"—",alt:true,rir:"1–2",note:"Menor exigencia lumbar que la sentadilla libre (coincide con tu historial), movimiento guiado."},
+      {ord:2,name:"Sentadilla Goblet",series:2,reps:"8–10",prev:"46",alt:false,rir:"1–2",note:"Serie de trabajo real, no calentamiento."},
+      {ord:3,name:"Extensiones",series:5,reps:"8–10",prev:"79",alt:false,rir:"0–1",note:"Tira de los agarres para fijar el glúteo al asiento: si la cadera sube y baja, pierdes tensión en el cuádriceps."},
+    ]},
+    {name:"Femoral",color:"var(--fem)",exercises:[
+      {ord:4,name:"Femoral sentado",series:5,reps:"8–10",prev:"79",alt:false,rir:"0–1",note:"Posición sentada = isquiotibial en mayor estiramiento; estudios muestran más hipertrofia proximal que la variante tumbada (~56% más en un estudio de 2021)."},
+      {ord:4,name:"RDL con mancuernas",series:5,reps:"8–10",prev:"—",alt:true,rir:"0–1",note:"Bisagra de cadera: estira el isquio en la porción distal, complementa el sesgo proximal del femoral sentado."},
+      {ord:5,name:"Femoral tumbado",series:5,reps:"10–12",prev:"200",alt:false,rir:"0–1",note:"Sustituye a la prensa (esa trabaja cuádriceps/glúteo, no isquios)."},
+    ]},
+  ]},
+  {id:4,label:"D4",sub:"Pecho · Espalda · Hombro",muscles:[
+    {name:"Pecho",color:"var(--pecho)",exercises:[
+      {ord:1,name:"Chest press (máquina)",series:3,reps:"8–10",prev:"63",alt:false,rir:"2 (últ. 1)",note:"RIR 2: prioriza ROM completo y técnica sobre subir carga, es día de menor volumen."},
+      {ord:1,name:"Press banca con mancuernas",series:3,reps:"8–10",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Fallback libre equivalente al chest press en máquina."},
+      {ord:2,name:"Aperturas (máquina/polea)",series:3,reps:"10–12",prev:"66",alt:false,rir:"2 (últ. 1)",note:"Codo con flexión fija; no dejes caer el codo para no perder tensión en pectoral."},
+    ]},
+    {name:"Espalda",color:"var(--espalda)",exercises:[
+      {ord:1,name:"Pullover en polea",series:3,reps:"10–12",prev:"29",alt:false,rir:"2 (últ. 1)",note:"Aislamiento, sin implicar la lumbar."},
+      {ord:1,name:"Pullover con mancuerna",series:3,reps:"10–12",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Mismo estímulo de estiramiento del dorsal sin depender de la polea."},
+      {ord:2,name:"Remo en polea alta, una mano",series:3,reps:"8–10",prev:"—",alt:false,rir:"2 (últ. 1)",note:"Unilateral: mayor rango y rotación torácica; tira el codo hacia atrás, no hacia arriba."},
+    ]},
+    {name:"Hombro",color:"var(--hombro)",exercises:[
+      {ord:1,name:"Press con mancuernas",series:3,reps:"8–10",prev:"52",alt:false,rir:"2 (últ. 1)",note:"Codos ligeramente por delante del torso, no en línea con los hombros: menos estrés articular en RIR bajo."},
+      {ord:1,name:"Press Arnold",series:3,reps:"8–10",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Buena valoración de Nippard por reclutamiento combinado anterior/lateral del deltoides."},
+      {ord:2,name:"Elevación lateral",series:3,reps:"10–12",prev:"—",alt:false,rir:"2 (últ. 1)",note:"Con mancuerna hay poca tensión abajo del recorrido; inclina algo el torso para mantener tensión constante."},
+      {ord:3,name:"Hombro posterior en máquina",series:3,reps:"12–15",prev:"59",alt:false,rir:"2 (últ. 1)",note:"Agarre neutro (si la máquina lo permite) aísla mejor el deltoides posterior que el pronado."},
+      {ord:3,name:"Face pull en polea",series:3,reps:"12–15",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Mismo razonamiento que D2: gran estiramiento, bajo coste de fatiga para día RIR 2."},
+    ]},
+  ]},
+  {id:5,label:"D5",sub:"Piernas · Bíceps · Tríceps",muscles:[
+    {name:"Cuádriceps",color:"var(--cuad)",exercises:[
+      {ord:1,name:"Hack squat (o sentadilla Smith/multipower)",series:3,reps:"8–10",prev:"82",alt:false,rir:"2 (últ. 1)",note:"Raíl guiado: menos exigencia lumbar que la libre."},
+      {ord:1,name:"Prensa de piernas",series:3,reps:"10–12",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Misma lógica que D3: movimiento guiado, menos demanda lumbar."},
+      {ord:2,name:"Extensiones",series:3,reps:"10–12",prev:"79",alt:false,rir:"2 (últ. 1)",note:"Fija el glúteo al asiento tirando de los agarres; evita que la cadera suba y baja."},
+    ]},
+    {name:"Femoral",color:"var(--fem)",exercises:[
+      {ord:3,name:"Femoral sentado",series:3,reps:"10–12",prev:"79",alt:false,rir:"2 (últ. 1)",note:"Posición sentada estira más el isquiotibial; más hipertrofia proximal que la variante tumbada."},
+      {ord:3,name:"RDL con barra",series:3,reps:"8–10",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Misma lógica que D3, variante con barra para dar variedad a la semana."},
+      {ord:4,name:"Hip thrust",series:3,reps:"10–12",prev:"—",alt:false,rir:"2 (últ. 1)",note:"Apoyo en banco: columna neutra fácil."},
+    ]},
+    {name:"Bíceps",color:"var(--biceps)",exercises:[
+      {ord:1,name:"Bíceps polea baja, una mano",series:3,reps:"10",prev:"11",alt:false,rir:"2 (últ. 1)",note:"Variante Bayesian: brazo detrás del torso maximiza el estiramiento en la parte alta del recorrido."},
+      {ord:2,name:"Curl inclinado con mancuernas",series:3,reps:"8–10",prev:"12",alt:false,rir:"2 (últ. 1)",note:"Banco 45–60°: el hombro en extensión estira más la cabeza larga del bíceps que un curl de pie."},
+      {ord:2,name:"Curl de pie con barra Z",series:3,reps:"8–10",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Fallback simple; menor sesgo de estiramiento que el inclinado (trade-off asumido)."},
+    ]},
+    {name:"Tríceps",color:"var(--triceps)",exercises:[
+      {ord:1,name:"Press francés en polea (pushdown)",series:3,reps:"12–15",prev:"22",alt:false,rir:"2 (últ. 1)",note:"El pushdown enfatiza cabezas lateral/medial; combina con la extensión overhead de D1 para la cabeza larga."},
+      {ord:1,name:"Extensión overhead a una mano (mancuerna)",series:3,reps:"12–15",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Variante unilateral de bajo fatiga que mantiene el sesgo de estiramiento de cabeza larga."},
+    ]},
+  ]},
+];
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+// Recuerda la última semana/día visitados (evita que al reabrir la app desde
+// segundo plano vuelva siempre a S01/D1 y se apunte por error en el día equivocado).
+function getLastPosition() {
+  try {
+    const p = JSON.parse(localStorage.getItem('gym_v2_pos') || '{}');
+    return { week: p.week || 1, day: p.day || 1 };
+  } catch { return { week: 1, day: 1 }; }
+}
+function saveLastPosition() {
+  localStorage.setItem('gym_v2_pos', JSON.stringify({ week: currentWeek, day: currentDay }));
+}
+
+const __lastPos = getLastPosition();
+let currentWeek = __lastPos.week;
+// Si el día guardado ya no existe en el PLAN (p.ej. tras una reestructuración de la rutina), vuelve a D1.
+let currentDay = (__lastPos.day >= 1 && __lastPos.day <= PLAN.length) ? __lastPos.day : 1;
+let currentView = 'day';
+
+function getState() {
+  try { return JSON.parse(localStorage.getItem('gym_v2') || '{}'); } catch { return {}; }
+}
+function setState(s) { localStorage.setItem('gym_v2', JSON.stringify(s)); }
+
+function getEx(week, dayId, mIdx, eIdx) {
+  const s = getState();
+  return s?.[week]?.[dayId]?.[mIdx]?.[eIdx] || {peso:'', series:'', reps:'', rir:null, notas:''};
+}
+
+// Series realmente realizadas. El plan (ex.series) es solo el objetivo/referencia;
+// si el usuario ha registrado cuántas series hizo de verdad (a veces menos por cansancio),
+// esas son las que cuentan para volumen y reps efectivas.
+function actualSeries(ex, st) {
+  if (st && st.series !== undefined && st.series !== null && st.series !== '') {
+    const n = parseFloat(st.series);
+    if (!isNaN(n)) return n;
+  }
+  return ex.series;
+}
+function setEx(week, dayId, mIdx, eIdx, data) {
+  const s = getState();
+  if (!s[week]) s[week] = {};
+  if (!s[week][dayId]) s[week][dayId] = {};
+  if (!s[week][dayId][mIdx]) s[week][dayId][mIdx] = {};
+  s[week][dayId][mIdx][eIdx] = {...getEx(week, dayId, mIdx, eIdx), ...data};
+  setState(s);
+}
+
+function hasWeekData(week) {
+  const s = getState();
+  return !!s[week];
+}
+
+// ── CALC ─────────────────────────────────────────────────────────────────────
+function calcVol(peso, reps, series) {
+  const p = parseFloat(peso), r = parseFloat(reps), s = parseFloat(series);
+  return (p && r && s) ? p * r * s : null;
+}
+function calc1RM(peso, reps, rir) {
+  const p = parseFloat(peso), r = parseFloat(reps);
+  if (!p || !r) return null;
+  const ri = (rir !== null && rir !== undefined && !isNaN(parseFloat(rir))) ? parseFloat(rir) : 0;
+  const repsToFailure = r + ri;
+  return Math.round(p * (1 + repsToFailure / 30) * 10) / 10;
+}
+function calcInt(peso, rm) {
+  return (peso && rm) ? Math.round(parseFloat(peso) / rm * 1000) / 10 : null;
+}
+function calcRefEf(series, reps, rir) {
+  const s = parseFloat(series), r = parseFloat(reps), ri = parseFloat(rir);
+  return (s && r && !isNaN(ri)) ? Math.max(0, s * r - s * ri) : null;
+}
+function getDayVol(week, dayId) {
+  let t = 0;
+  const s = getState();
+  PLAN[dayId-1].muscles.forEach((m, mi) => {
+    m.exercises.forEach((ex, ei) => {
+      const d = s?.[week]?.[dayId]?.[mi]?.[ei];
+      if (d) { const v = calcVol(d.peso, d.reps, actualSeries(ex, d)); if (v) t += v; }
+    });
+  });
+  return t;
+}
+function getMuscleVol(week, dayId, mIdx) {
+  let t = 0;
+  const s = getState();
+  PLAN[dayId-1].muscles[mIdx].exercises.forEach((ex, ei) => {
+    const d = s?.[week]?.[dayId]?.[mIdx]?.[ei];
+    if (d) { const v = calcVol(d.peso, d.reps, actualSeries(ex, d)); if (v) t += v; }
+  });
+  return t;
+}
+function getDaySeries(week, dayId) {
+  let t = 0;
+  const s = getState();
+  PLAN[dayId-1].muscles.forEach((m, mi) => {
+    m.exercises.forEach((ex, ei) => {
+      const d = s?.[week]?.[dayId]?.[mi]?.[ei];
+      if (d && (d.peso || d.reps || d.series)) t += actualSeries(ex, d);
+    });
+  });
+  return t;
+}
+// Cuenta solo los ejercicios realmente marcados/completados. El PLAN incluye
+// alternativas (mismo ord) por si el principal no se puede hacer, pero eso no
+// significa que se hagan ambas — solo cuenta lo que el usuario ha rellenado.
+function getDayExerciseCount(week, dayId) {
+  let t = 0;
+  const s = getState();
+  PLAN[dayId-1].muscles.forEach((m, mi) => {
+    m.exercises.forEach((ex, ei) => {
+      const d = s?.[week]?.[dayId]?.[mi]?.[ei];
+      if (d && (d.peso || d.reps || d.series)) t++;
+    });
+  });
+  return t;
+}
+function getPrevPeso(dayId, mIdx, eIdx) {
+  if (currentWeek <= 1) return null;
+  const d = getEx(currentWeek - 1, dayId, mIdx, eIdx);
+  return d.peso ? parseFloat(d.peso) : null;
+}
+// Últimas N sesiones con peso registrado para un ejercicio (incluye la semana actual si ya tiene dato).
+function getExerciseHistoryRows(dayId, mIdx, eIdx, limit) {
+  const s = getState();
+  const weeks = Object.keys(s).map(Number).sort((a,b) => a-b);
+  const rows = weeks.map(w => {
+    const d = s?.[w]?.[dayId]?.[mIdx]?.[eIdx];
+    return { week: w, peso: d?.peso || null, reps: d?.reps || null, rir: d?.rir };
+  }).filter(r => r.peso);
+  return rows.slice(-limit);
+}
+// Busca hacia atrás la sesión anterior real (con algún dato registrado), aunque haya semanas saltadas.
+function getPrevSession(dayId, mIdx, eIdx) {
+  for (let w = currentWeek - 1; w >= 1; w--) {
+    const d = getEx(w, dayId, mIdx, eIdx);
+    if (d && (d.peso || d.reps || d.series || d.notas)) {
+      return { week: w, notas: d.notas || '' };
+    }
+  }
+  return null;
+}
+function fmt(n, dec=0) {
+  if (n === null || n === undefined || isNaN(n)) return '—';
+  return n.toLocaleString('es-ES', {maximumFractionDigits: dec, minimumFractionDigits: dec});
+}
+
+// ── RENDER TABS ───────────────────────────────────────────────────────────────
+function renderTabs() {
+  document.getElementById('day-tabs').innerHTML = PLAN.map(d =>
+    `<button class="tab${d.id === currentDay ? ' active' : ''}" onclick="switchDay(${d.id})">${d.label}</button>`
+  ).join('');
+  document.getElementById('nav-week').textContent = `S${String(currentWeek).padStart(2,'0')}`;
+}
+
+// ── RENDER DAY ────────────────────────────────────────────────────────────────
+function renderDay() {
+  if (currentView !== 'day') return;
+  const day = PLAN[currentDay - 1];
+  const totalVol = getDayVol(currentWeek, currentDay);
+  const exCount = getDayExerciseCount(currentWeek, currentDay);
+  const seriesCount = getDaySeries(currentWeek, currentDay);
+
+  let html = `
+    <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:var(--muted2);margin-bottom:12px">${day.sub}</div>
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-val" id="sv-vol">${totalVol ? fmt(totalVol) : '—'}</div>
+        <div class="stat-lbl">Vol. kg</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="sv-excount">${exCount}</div>
+        <div class="stat-lbl">Ejercicios</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="sv-series">${seriesCount}</div>
+        <div class="stat-lbl">Series</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">S${String(currentWeek).padStart(2,'0')}</div>
+        <div class="stat-lbl">Semana</div>
+      </div>
+    </div>`;
+
+  day.muscles.forEach((muscle, mIdx) => {
+    const mVol = getMuscleVol(currentWeek, currentDay, mIdx);
+    html += `
+      <div class="muscle-section">
+        <div class="muscle-hdr">
+          <div class="muscle-dot" style="background:${muscle.color}"></div>
+          <div class="muscle-name" style="color:${muscle.color}">${muscle.name}</div>
+          <div class="muscle-vol-lbl">Vol:</div>
+          <div class="muscle-vol-val" id="mv-${currentDay}-${mIdx}">${mVol ? fmt(mVol) + ' kg' : '—'}</div>
+        </div>`;
+
+    muscle.exercises.forEach((ex, eIdx) => {
+      const id = `e-${currentDay}-${mIdx}-${eIdx}`;
+      const st = getEx(currentWeek, currentDay, mIdx, eIdx);
+      const ser = actualSeries(ex, st);
+      const vol = calcVol(st.peso, st.reps, ser);
+      const rm = calc1RM(st.peso, st.reps, st.rir);
+      const intens = calcInt(st.peso, rm);
+      const refEf = st.rir !== null ? calcRefEf(ser, st.reps, st.rir) : null;
+      const prevP = getPrevPeso(currentDay, mIdx, eIdx);
+      const delta = (st.peso && prevP) ? parseFloat(st.peso) - prevP : null;
+      const hasData = st.peso || st.reps;
+
+      let deltaHtml = '';
+      if (currentWeek > 1) {
+        let cls = 'delta-zero', txt = 'Sin datos semana anterior';
+        if (delta !== null) {
+          cls = delta > 0 ? 'delta-pos' : delta < 0 ? 'delta-neg' : 'delta-zero';
+          txt = delta > 0 ? `+${delta} kg vs S${String(currentWeek-1).padStart(2,'0')}` :
+                delta < 0 ? `${delta} kg vs S${String(currentWeek-1).padStart(2,'0')}` :
+                `Sin cambio vs S${String(currentWeek-1).padStart(2,'0')}`;
+        } else if (prevP !== null) {
+          txt = `Sem. ant.: ${prevP} kg`;
+        }
+        deltaHtml = `<div class="delta-row"><span>Δ semana anterior</span><span class="delta-val ${cls}">${txt}</span></div>`;
+      }
+
+      // Histórico mini (últimas 5 sesiones) + nota de la sesión anterior real
+      const histRows = getExerciseHistoryRows(currentDay, mIdx, eIdx, 5);
+      const miniChartSvg = buildMiniChart(histRows, id);
+      let miniHistHtml;
+      if (miniChartSvg) {
+        miniHistHtml = `<div class="mini-hist-chart">${miniChartSvg}</div>`;
+      } else if (histRows.length === 1) {
+        miniHistHtml = `<div class="mini-hist-empty">Primer registro: ${histRows[0].peso} kg · S${String(histRows[0].week).padStart(2,'0')}</div>`;
+      } else {
+        miniHistHtml = `<div class="mini-hist-empty">Aún sin histórico</div>`;
+      }
+      const prevSession = getPrevSession(currentDay, mIdx, eIdx);
+      const prevNoteHtml = prevSession
+        ? `<div class="prev-note-box"><span class="prev-note-lbl">Nota S${String(prevSession.week).padStart(2,'0')}</span>${prevSession.notas ? prevSession.notas : 'Sin notas en esa sesión.'}</div>`
+        : '';
+
+      const rirLabels = ['Al fallo','RIR 1','RIR 2','RIR 3','RIR 4+'];
+
+      html += `
+        <div class="ex-card${hasData ? ' has-data' : ''}" id="${id}">
+          <div class="ex-top" onclick="toggleEx('${id}')">
+            <div class="ex-ord" style="background:${muscle.color}22;color:${muscle.color}">${ex.ord}</div>
+            <div class="ex-name">${ex.name}${ex.alt ? ' <span class="ex-alt-tag">ALT</span>' : ''}</div>
+            ${ex.rir ? `<div class="ex-rir-badge">RIR ${ex.rir}</div>` : ''}
+            <div class="ex-summary">${st.peso ? st.peso + ' kg' : ser + '×' + ex.reps}</div>
+            <div class="ex-chevron">⌄</div>
+          </div>
+          <div class="ex-body">
+            <div class="obj-row">
+              <div class="obj-lbl">Objetivo</div>
+              <div><span class="obj-val">${ex.series} series</span><span class="obj-reps">× ${ex.reps} reps${ex.rir ? ` · RIR ${ex.rir}` : ''}</span></div>
+            </div>
+            <div class="mini-hist">${miniHistHtml}${prevNoteHtml}</div>
+            <div class="prev-row">
+              <span>${prevP !== null ? `S${String(currentWeek-1).padStart(2,'0')}` : 'Marca anterior'}</span>
+              <span class="prev-val">${prevP !== null ? prevP + ' kg' : ex.prev + ' kg'}</span>
+            </div>
+            ${ex.note ? `<div style="font-size:11px;color:var(--muted2);margin-bottom:8px;padding:6px 8px;background:var(--bg);border-radius:6px">${ex.note}</div>` : ''}
+
+            <div class="input-grid">
+              <div class="input-group">
+                <div class="input-lbl">Peso (kg)</div>
+                <input class="num-input peso-input" type="number" inputmode="decimal" step="0.5"
+                  placeholder="—" value="${st.peso}"
+                  oninput="saveField(${currentDay},${mIdx},${eIdx},'peso',this.value)"
+                  id="inp-peso-${id}">
+              </div>
+              <div class="input-group">
+                <div class="input-lbl">Series</div>
+                <input class="num-input series-input" type="number" inputmode="numeric" min="0"
+                  placeholder="${ex.series}" value="${st.series || ''}"
+                  oninput="saveField(${currentDay},${mIdx},${eIdx},'series',this.value)"
+                  id="inp-series-${id}">
+              </div>
+              <div class="input-group">
+                <div class="input-lbl">Reps</div>
+                <input class="num-input reps-input" type="number" inputmode="numeric"
+                  placeholder="${ex.reps}" value="${st.reps}"
+                  oninput="saveField(${currentDay},${mIdx},${eIdx},'reps',this.value)"
+                  id="inp-reps-${id}">
+              </div>
+              <div class="input-group">
+                <div class="input-lbl">RIR</div>
+                <input class="num-input rir-input" type="number" inputmode="numeric" min="0" max="5"
+                  placeholder="—" value="${st.rir !== null ? st.rir : ''}"
+                  oninput="saveRirInput(${currentDay},${mIdx},${eIdx},this.value,'${id}')"
+                  id="inp-rir-${id}">
+              </div>
+            </div>
+
+            <div class="metrics-grid" id="metrics-${id}">
+              <div class="metric-card m-vol">
+                <div class="metric-val" id="m-vol-${id}">${vol ? fmt(vol) : '—'}</div>
+                <div class="metric-lbl">Volumen</div>
+              </div>
+              <div class="metric-card m-1rm">
+                <div class="metric-val" id="m-1rm-${id}">${rm ? fmt(rm,1) : '—'}</div>
+                <div class="metric-lbl">1RM est.</div>
+              </div>
+              <div class="metric-card m-int">
+                <div class="metric-val" id="m-int-${id}">${intens ? fmt(intens,1)+'%' : '—'}</div>
+                <div class="metric-lbl">Intensidad</div>
+              </div>
+              <div class="metric-card m-ref">
+                <div class="metric-val" id="m-ref-${id}">${refEf !== null ? fmt(refEf) : '—'}</div>
+                <div class="metric-lbl">Reps ef.</div>
+              </div>
+            </div>
+
+            ${deltaHtml}
+
+            <div class="rir-wrap">
+              <div class="rir-lbl">RIR rápido</div>
+              <div class="rir-btns">
+                ${rirLabels.map((r, i) =>
+                  `<button class="rir-btn${st.rir === i ? ' active' : ''}"
+                    onclick="saveRIR(${currentDay},${mIdx},${eIdx},${i},'${id}',this)">${r}</button>`
+                ).join('')}
+              </div>
+            </div>
+
+            <textarea class="notes-input" placeholder="Notas..."
+              oninput="saveField(${currentDay},${mIdx},${eIdx},'notas',this.value)">${st.notas||''}</textarea>
+          </div>
+        </div>`;
+    });
+
+    html += `</div>`;
+  });
+
+  document.getElementById('view-day').innerHTML = html;
+}
+
+// ── CHART ────────────────────────────────────────────────────────────────────
+function buildChart(rows, chartId) {
+  if (rows.length < 2) return '';
+
+  const W = 340, H = 130;
+  const PAD = { top: 18, right: 16, bottom: 28, left: 38 };
+  const iW = W - PAD.left - PAD.right;
+  const iH = H - PAD.top - PAD.bottom;
+
+  const pesos = rows.map(r => parseFloat(r.peso));
+  const rms   = rows.map(r => calc1RM(r.peso, r.reps));
+  const minP  = Math.min(...pesos);
+  const maxP  = Math.max(...pesos);
+  const rng   = maxP - minP || 1;
+
+  const xS = i  => PAD.left + (i / (rows.length - 1)) * iW;
+  const yS = v  => PAD.top  + iH - ((v - minP) / rng) * iH;
+
+  const pts  = rows.map((r, i) => `${xS(i).toFixed(1)},${yS(parseFloat(r.peso)).toFixed(1)}`);
+  const area = [`${xS(0).toFixed(1)},${(PAD.top+iH).toFixed(1)}`, ...pts, `${xS(rows.length-1).toFixed(1)},${(PAD.top+iH).toFixed(1)}`].join(' ');
+  const gid  = 'cg' + chartId;
+
+  let s = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
+  <defs>
+    <linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a84ff" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#0a84ff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>`;
+
+  // Grid lines y
+  [0, 0.5, 1].forEach(t => {
+    const gy = PAD.top + iH * (1 - t);
+    const val = (minP + rng * t).toFixed(1);
+    s += `<line x1="${PAD.left}" y1="${gy.toFixed(1)}" x2="${PAD.left+iW}" y2="${gy.toFixed(1)}" stroke="#2c2c2e" stroke-width="1"/>`;
+    s += `<text x="${(PAD.left-5).toFixed(0)}" y="${(gy+3).toFixed(0)}" text-anchor="end" font-size="8" fill="#8e8e93">${val}</text>`;
+  });
+
+  // Area + line
+  s += `<polygon points="${area}" fill="url(#${gid})"/>`;
+  s += `<polyline points="${pts.join(' ')}" fill="none" stroke="#0a84ff" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+
+  // Puntos, etiquetas semana y peso
+  rows.forEach((r, i) => {
+    const x   = xS(i);
+    const y   = yS(parseFloat(r.peso));
+    const best = parseFloat(r.peso) === maxP;
+    const col  = best ? '#30d158' : '#0a84ff';
+    const rad  = best ? 5.5 : 3.5;
+
+    s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${rad}" fill="${col}" stroke="#1c1c1e" stroke-width="1.5"/>`;
+
+    // Semana abajo
+    s += `<text x="${x.toFixed(1)}" y="${H-5}" text-anchor="middle" font-size="8" fill="#8e8e93">S${String(r.week).padStart(2,'0')}</text>`;
+
+    // Peso arriba del punto (primer, último y máximo)
+    if (i === 0 || i === rows.length - 1 || best) {
+      const ly = y < PAD.top + 14 ? y + 14 : y - 7;
+      s += `<text x="${x.toFixed(1)}" y="${ly.toFixed(0)}" text-anchor="middle" font-size="9" font-weight="600" fill="${col}">${r.peso}</text>`;
+    }
+  });
+
+  s += `</svg>`;
+  return s;
+}
+
+// Sparkline compacto: sin ejes/grid, para incrustar dentro de la tarjeta del ejercicio.
+function buildMiniChart(rows, chartId) {
+  if (rows.length < 2) return null;
+
+  const W = 300, H = 70;
+  const PAD = { top: 14, right: 10, bottom: 16, left: 10 };
+  const iW = W - PAD.left - PAD.right;
+  const iH = H - PAD.top - PAD.bottom;
+
+  const pesos = rows.map(r => parseFloat(r.peso));
+  const minP = Math.min(...pesos);
+  const maxP = Math.max(...pesos);
+  const rng = maxP - minP || 1;
+
+  const xS = i => PAD.left + (i / (rows.length - 1)) * iW;
+  const yS = v => PAD.top + iH - ((v - minP) / rng) * iH;
+
+  const pts = rows.map((r, i) => `${xS(i).toFixed(1)},${yS(parseFloat(r.peso)).toFixed(1)}`);
+  const area = [`${xS(0).toFixed(1)},${(PAD.top+iH).toFixed(1)}`, ...pts, `${xS(rows.length-1).toFixed(1)},${(PAD.top+iH).toFixed(1)}`].join(' ');
+  const gid = 'mcg' + chartId;
+
+  let s = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
+  <defs>
+    <linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a84ff" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#0a84ff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>`;
+
+  s += `<polygon points="${area}" fill="url(#${gid})"/>`;
+  s += `<polyline points="${pts.join(' ')}" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+
+  rows.forEach((r, i) => {
+    const x = xS(i);
+    const y = yS(parseFloat(r.peso));
+    const best = parseFloat(r.peso) === maxP;
+    const col = best ? '#30d158' : '#0a84ff';
+    const rad = best ? 4.5 : 3;
+
+    s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${rad}" fill="${col}" stroke="#1c1c1e" stroke-width="1.2"/>`;
+    s += `<text x="${x.toFixed(1)}" y="${H-4}" text-anchor="middle" font-size="7" fill="#8e8e93">S${String(r.week).padStart(2,'0')}</text>`;
+
+    if (i === rows.length - 1 || best) {
+      const ly = y < PAD.top + 10 ? y + 11 : y - 6;
+      s += `<text x="${x.toFixed(1)}" y="${ly.toFixed(0)}" text-anchor="middle" font-size="8" font-weight="700" fill="${col}">${r.peso}</text>`;
+    }
+  });
+
+  s += `</svg>`;
+  return s;
+}
+
+// ── RENDER HISTORIAL ──────────────────────────────────────────────────────────
+function renderHistorial() {
+  const s = getState();
+  const weeks = Object.keys(s).map(Number).sort((a,b) => a-b);
+
+  if (!weeks.length) {
+    document.getElementById('hist-content').innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">📊</div>
+        <p>Aún no hay datos registrados.<br>Completa tu primera semana de entrenamiento.</p>
+      </div>`;
+    return;
+  }
+
+  // Build per-exercise history
+  let html = '';
+  PLAN.forEach(day => {
+    html += `<div class="hist-section">
+      <div class="hist-title">${day.label} — ${day.sub}</div>`;
+
+    day.muscles.forEach((muscle, mIdx) => {
+      muscle.exercises.forEach((ex, eIdx) => {
+        const rows = weeks.map(w => {
+          const d = s?.[w]?.[day.id]?.[mIdx]?.[eIdx];
+          return { week: w, peso: d?.peso || null, reps: d?.reps || null, rir: d?.rir };
+        }).filter(r => r.peso);
+
+        if (!rows.length) return;
+
+        const pesos = rows.map(r => parseFloat(r.peso));
+        const best = Math.max(...pesos);
+
+        const rms = rows.map(r => calc1RM(r.peso, r.reps));
+        const bestRM = Math.max(...rms.filter(Boolean));
+
+        const hid = `hb-${day.id}-${mIdx}-${eIdx}`;
+        const latest = rows[rows.length - 1];
+        const latestIsBest = parseFloat(latest.peso) === best;
+
+        html += `
+          <div class="hist-block">
+            <div class="hist-block-hdr" onclick="toggleHistBlock('${hid}', this)">
+              <span class="hist-block-name" style="color:${muscle.color}">${ex.name}</span>
+              <span class="hist-block-summary">${latest.peso} kg${latestIsBest ? ' ★' : ''}<span class="hist-toggle-arrow">⌄</span></span>
+            </div>
+            <div class="hist-block-body" id="${hid}">
+            <div class="hist-table">
+            <div class="hist-table-hdr">
+              <span>Sem.</span>
+              <span>Peso</span>
+              <span>Δ peso</span>
+              <span>1RM est.</span>
+            </div>`;
+
+        rows.forEach((r, i) => {
+          const rm = calc1RM(r.peso, r.reps);
+          const prevPeso = i > 0 ? parseFloat(rows[i-1].peso) : null;
+          const prevRM   = i > 0 ? rms[i-1] : null;
+          const deltaPeso = prevPeso !== null ? Math.round((parseFloat(r.peso) - prevPeso)*10)/10 : null;
+          const deltaRM   = (prevRM && rm) ? Math.round((rm - prevRM)*10)/10 : null;
+          const isBest = parseFloat(r.peso) === best;
+
+          function fmtDelta(d) {
+            if (d === null) return {txt:'—', cls:''};
+            if (d > 0) return {txt:`+${d}`, cls:'up'};
+            if (d < 0) return {txt:`${d}`, cls:'down'};
+            return {txt:'=', cls:''};
+          }
+          const dp = fmtDelta(deltaPeso);
+          const dr = fmtDelta(deltaRM);
+
+          html += `
+            <div class="hist-row">
+              <div class="hist-cell"><span class="hist-week-badge">S${String(r.week).padStart(2,'0')}</span></div>
+              <div class="hist-cell${isBest ? ' best' : ''}">${r.peso} kg${isBest ? ' ★' : ''}</div>
+              <div class="hist-cell ${dp.cls}">${dp.txt}</div>
+              <div class="hist-cell">${rm ? fmt(rm,1) : '—'}</div>
+            </div>`;
+        });
+
+        html += `</div>`;
+
+        // Gráfica de progresión (desplegable)
+        const chartSvg = buildChart(rows, `${day.id}-${mIdx}-${eIdx}`);
+        if (chartSvg) {
+          const cid = `chart-${day.id}-${mIdx}-${eIdx}`;
+          html += `
+            <button class="chart-toggle" onclick="toggleChart('${cid}',this)">
+              <span>Progresión de peso</span>
+              <span class="chart-toggle-arrow">⌄</span>
+            </button>
+            <div class="chart-wrap" id="${cid}">${chartSvg}</div>`;
+        }
+
+        html += `</div></div>`; // cierra hist-block-body y hist-block
+      });
+    });
+
+    html += `</div>`;
+  });
+
+  document.getElementById('hist-content').innerHTML = html;
+}
+
+// ── EVENTS ────────────────────────────────────────────────────────────────────
+function toggleEx(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+function toggleHistBlock(id, hdr) {
+  const body = document.getElementById(id);
+  const isOpen = body.classList.toggle('open');
+  hdr.classList.toggle('open', isOpen);
+}
+
+function toggleChart(id, btn) {
+  const chart = document.getElementById(id);
+  const isOpen = chart.classList.toggle('open');
+  btn.classList.toggle('open', isOpen);
+  if (isOpen) {
+    btn.style.borderRadius = 'var(--r) var(--r) 0 0';
+    btn.style.borderBottom = 'none';
+  } else {
+    btn.style.borderRadius = 'var(--r)';
+    btn.style.borderBottom = '';
+  }
+}
+
+function saveField(dayId, mIdx, eIdx, field, value) {
+  setEx(currentWeek, dayId, mIdx, eIdx, {[field]: value});
+  updateMetrics(dayId, mIdx, eIdx);
+}
+
+function saveRirInput(dayId, mIdx, eIdx, value, id) {
+  const rir = value !== '' ? parseInt(value) : null;
+  setEx(currentWeek, dayId, mIdx, eIdx, {rir});
+  // sync buttons
+  const btns = document.querySelectorAll(`#e-${dayId}-${mIdx}-${eIdx} .rir-btn`);
+  btns.forEach((b, i) => b.classList.toggle('active', i === rir));
+  updateMetrics(dayId, mIdx, eIdx);
+}
+
+function saveRIR(dayId, mIdx, eIdx, val, id, btn) {
+  setEx(currentWeek, dayId, mIdx, eIdx, {rir: val});
+  btn.closest('.rir-btns').querySelectorAll('.rir-btn').forEach((b,i) => b.classList.toggle('active', i===val));
+  // sync input
+  const inp = document.getElementById(`inp-rir-e-${dayId}-${mIdx}-${eIdx}`);
+  if (inp) inp.value = val;
+  updateMetrics(dayId, mIdx, eIdx);
+}
+
+function updateMetrics(dayId, mIdx, eIdx) {
+  const id = `e-${dayId}-${mIdx}-${eIdx}`;
+  const st = getEx(currentWeek, dayId, mIdx, eIdx);
+  const ex = PLAN[dayId-1].muscles[mIdx].exercises[eIdx];
+  const ser = actualSeries(ex, st);
+
+  const vol = calcVol(st.peso, st.reps, ser);
+  const rm = calc1RM(st.peso, st.reps, st.rir);
+  const intens = calcInt(st.peso, rm);
+  const refEf = st.rir !== null ? calcRefEf(ser, st.reps, st.rir) : null;
+
+  const el = (sid) => document.getElementById(sid);
+  if (el(`m-vol-${id}`)) el(`m-vol-${id}`).textContent = vol ? fmt(vol) : '—';
+  if (el(`m-1rm-${id}`)) el(`m-1rm-${id}`).textContent = rm ? fmt(rm,1) : '—';
+  if (el(`m-int-${id}`)) el(`m-int-${id}`).textContent = intens ? fmt(intens,1)+'%' : '—';
+  if (el(`m-ref-${id}`)) el(`m-ref-${id}`).textContent = refEf !== null ? fmt(refEf) : '—';
+
+  // Update muscle vol
+  const mVol = getMuscleVol(currentWeek, dayId, mIdx);
+  if (el(`mv-${dayId}-${mIdx}`)) el(`mv-${dayId}-${mIdx}`).textContent = mVol ? fmt(mVol) + ' kg' : '—';
+
+  // Update day total
+  const dVol = getDayVol(currentWeek, dayId);
+  if (el('sv-vol')) el('sv-vol').textContent = dVol ? fmt(dVol) : '—';
+
+  // Update day series (solo las realmente marcadas)
+  const dSeries = getDaySeries(currentWeek, dayId);
+  if (el('sv-series')) el('sv-series').textContent = dSeries;
+
+  // Update day exercise count (solo los ejercicios realmente rellenados)
+  const dExCount = getDayExerciseCount(currentWeek, dayId);
+  if (el('sv-excount')) el('sv-excount').textContent = dExCount;
+}
+
+function switchDay(dayId) {
+  currentDay = dayId;
+  saveLastPosition();
+  renderTabs();
+  renderDay();
+}
+
+function showView(v) {
+  currentView = v;
+  document.getElementById('view-day').classList.toggle('active', v === 'day');
+  document.getElementById('view-historial').classList.toggle('active', v === 'historial');
+  if (v === 'historial') renderHistorial();
+}
+
+// ── SWIPE PARA SALIR DEL HISTORIAL ────────────────────────────────────────────
+(function() {
+  const histView = document.getElementById('view-historial');
+  let sx = null, sy = null;
+  histView.addEventListener('touchstart', (e) => {
+    sx = e.touches[0].clientX;
+    sy = e.touches[0].clientY;
+  }, { passive: true });
+  histView.addEventListener('touchend', (e) => {
+    if (sx === null) return;
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    sx = null;
+    if (dx < -70 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      showView('day');
+      const bd = document.getElementById('bnav-day'), bh = document.getElementById('bnav-hist');
+      if (bd) bd.classList.add('active');
+      if (bh) bh.classList.remove('active');
+    }
+  }, { passive: true });
+})();
+
+// ── WEEK MODAL ────────────────────────────────────────────────────────────────
+function openWeekModal() {
+  const container = document.getElementById('modal-weeks');
+  container.innerHTML = Array.from({length:20},(_,i)=>i+1).map(w => {
+    const hasData = hasWeekData(w);
+    return `<button class="wk-btn${w===currentWeek?' active':''}${hasData?' has-data':''}"
+      onclick="selectWeek(${w},this)">S${String(w).padStart(2,'0')}</button>`;
+  }).join('');
+  document.getElementById('week-modal').classList.add('open');
+}
+
+function closeWeekModal(e) {
+  if (!e || e.target === document.getElementById('week-modal')) {
+    document.getElementById('week-modal').classList.remove('open');
+  }
+}
+
+function selectWeek(w, btn) {
+  currentWeek = w;
+  saveLastPosition();
+  document.querySelectorAll('.wk-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTabs();
+  renderDay();
+}
+
+// ── EXPORT / IMPORT ───────────────────────────────────────────────────────────
+function exportData() {
+  const data = {
+    version: 1,
+    exported: new Date().toISOString(),
+    data: getState()
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `entreno_backup_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✓ Datos exportados correctamente');
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      const data = parsed.data || parsed;
+      setState(data);
+      showToast('✓ Datos importados correctamente');
+      renderDay();
+      renderHistorial();
+    } catch {
+      showToast('✗ Error al importar el archivo');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function clearAllData() {
+  if (confirm('¿Borrar todos los datos? Esta acción no se puede deshacer.')) {
+    localStorage.removeItem('gym_v2');
+    localStorage.removeItem('gym_v2_pos');
+    showToast('✓ Datos borrados');
+    renderDay();
+    renderHistorial();
+  }
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// INIT
+renderTabs();
+renderDay();
+</script>
+
+<!-- PWA -->
+<script>
+(function() {
+  function makeIcon(size) {
+    const c = document.createElement('canvas');
+    c.width = c.height = size;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#000000';
+    ctx.beginPath();
+    ctx.roundRect(0, 0, size, size, size * 0.22);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '800 ' + Math.round(size * 0.38) + 'px Arial Black, Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('S', size / 2, size * 0.48);
+    ctx.fillStyle = '#ff9f0a';
+    const r = size * 0.07;
+    ctx.beginPath();
+    ctx.arc(size * 0.62, size * 0.72, r, 0, Math.PI * 2);
+    ctx.fill();
+    return c.toDataURL('image/png');
+  }
+
+  const icon192 = makeIcon(192);
+  const icon512 = makeIcon(512);
+  const icon180 = makeIcon(180);
+
+  document.getElementById('pwa-icon').href = icon180;
+
+  const manifest = {
+    name: 'Stronger',
+    short_name: 'Stronger',
+    description: 'App de seguimiento de entrenos',
+    display: 'standalone',
+    orientation: 'portrait',
+    background_color: '#000000',
+    theme_color: '#000000',
+    start_url: './',
+    icons: [
+      { src: icon192, sizes: '192x192', type: 'image/png' },
+      { src: icon512, sizes: '512x512', type: 'image/png' }
+    ]
+  };
+    const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+  document.getElementById('pwa-manifest').href = URL.createObjectURL(manifestBlob);
+
+  if ('serviceWorker' in navigator) {
+    const swCode = [
+      'const CACHE = "entreno-v2-log";',
+      'const PAGE_URL = self.registration.scope;',
+      'self.addEventListener("install", e => { self.skipWaiting(); e.waitUntil(caches.open(CACHE).then(c => c.add(PAGE_URL))); });',
+      'self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => clients.claim())); });',
+      'self.addEventListener("fetch", e => { if (e.request.mode === "navigate") { e.respondWith(fetch(e.request).then(res => { const clone = res.clone(); caches.open(CACHE).then(c => c.put(e.request, clone)); return res; }).catch(() => caches.match(PAGE_URL))); } });'
+    ].join('\n');
+    const blob = new Blob([swCode], { type: 'application/javascript' });
+    navigator.serviceWorker.register(URL.createObjectURL(blob), { scope: './' }).catch(() => {});
+  }
+})();
+</script>
+</body>
+</html>
