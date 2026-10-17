@@ -45,6 +45,7 @@
   --biceps: #30d158;
   --cuad: #ffd60a;
   --fem: #ff453a;
+  --gemelo: #5e5ce6;
   --r: 10px;
   --r2: 14px;
   --shadow: none;
@@ -311,96 +312,152 @@ body { background: var(--bg); font-family: 'DM Mono', monospace; color: var(--na
 
 <script>
 // ── PLAN ────────────────────────────────────────────────────────────────────
+// Upper/Lower × 2 (desde octubre 2026). Cada ejercicio tiene un `id` estable:
+// los datos se guardan por id, NO por posición en la tabla. Así se puede
+// reordenar, añadir o quitar ejercicios sin que los pesos se desplacen a otro.
+// Regla: no cambiar nunca el `id` de un ejercicio que ya tiene datos.
 const PLAN = [
-  {id:1,label:"D1",sub:"Pecho · Hombro · Tríceps",muscles:[
+  {id:1,label:"D1",sub:"Upper · Fuerza",muscles:[
     {name:"Pecho",color:"var(--pecho)",exercises:[
-      {ord:1,name:"Press converging (máquina)",series:5,reps:"3–5",prev:"84",alt:false,rir:"1–2",note:"Asiento 4."},
-      {ord:1,name:"Press banca con barra",series:5,reps:"3–5",prev:"—",alt:true,rir:"1–2",note:"Alt. directa al converging: estímulo de fuerza comparable, A-tier en el ranking de Nippard."},
-      {ord:2,name:"Press inclinado con mancuernas",series:5,reps:"8–10",prev:"72",alt:false,rir:"1–2",note:"Banco 30–45°: más énfasis en pectoral clavicular (superior). Baja hasta sentir estiramiento."},
-      {ord:3,name:"Aperturas (máquina / polea sentado)",series:5,reps:"9–12",prev:"66",alt:false,rir:"0–1",note:"Codo con flexión fija todo el recorrido; el objetivo es el estiramiento, no subir peso."},
+      {id:"press-converging",ord:1,name:"Press converging (máquina)",series:4,reps:"3–5",rir:"2",rest:"2–3 min",prev:"84",alt:false,note:"Asiento 4."},
+      {id:"press-banca-barra",ord:1,name:"Press banca con barra",series:4,reps:"3–5",rir:"2",rest:"2–3 min",prev:"—",alt:true,note:"Alternativa al converging."},
+    ]},
+    {name:"Espalda",color:"var(--espalda)",exercises:[
+      {id:"remo-maquina-pecho-apoyado",ord:1,name:"Remo en máquina pecho apoyado",series:4,reps:"5–6",rir:"2",rest:"2–3 min",prev:"72",alt:false,note:"Pecho apoyado: la lumbar no estabiliza la carga."},
+      {id:"remo-t-pecho-apoyado",ord:1,name:"Remo en T pecho apoyado",series:4,reps:"5–6",rir:"2",rest:"2–3 min",prev:"—",alt:true,note:"Alternativa al remo en máquina."},
+      {id:"jalon-neutro-abierto",ord:2,name:"Jalón al pecho agarre neutro abierto",series:3,reps:"8–10",rir:"1–2",rest:"90–120 s",prev:"63",alt:false,note:"Tira liderando con el codo, no con el bíceps."},
+      {id:"jalon-pecho-normal",ord:2,name:"Jalón al pecho (agarre normal)",series:3,reps:"8–10",rir:"1–2",rest:"90–120 s",prev:"—",alt:true,note:"Alternativa al jalón neutro."},
     ]},
     {name:"Hombro",color:"var(--hombro)",exercises:[
-      {ord:1,name:"Press máquina cerrado",series:5,reps:"5–6",prev:"54",alt:false,rir:"1–2",note:"Máquina reduce la demanda estabilizadora vs. press libre: permite acercarte más al fallo con seguridad. No bloquees el codo con fuerza arriba."},
-      {ord:1,name:"Press mancuernas sentado",series:5,reps:"5–6",prev:"—",alt:true,rir:"1–2",note:"Fallback libre al press en máquina, curva de fuerza similar."},
-      {ord:2,name:"Elevación lateral en polea",series:5,reps:"10–12",prev:"4,5",alt:false,rir:"0–1",note:"Polea baja cruzando el cuerpo: tensión máxima con el brazo estirado, al contrario que la mancuerna (pierde tensión abajo)."},
+      {id:"press-maquina-cerrado",ord:1,name:"Press máquina cerrado",series:3,reps:"5–6",rir:"2",rest:"2–3 min",prev:"54",alt:false,note:"No bloquees el codo con fuerza arriba."},
+      {id:"press-mancuernas-sentado",ord:1,name:"Press mancuernas sentado",series:3,reps:"5–6",rir:"2",rest:"2–3 min",prev:"—",alt:true,note:"Alternativa al press en máquina."},
     ]},
     {name:"Tríceps",color:"var(--triceps)",exercises:[
-      {ord:1,name:"Extensión overhead en polea alta",series:5,reps:"8–10",prev:"33",alt:false,rir:"0–1",note:"La posición overhead estira más la cabeza larga: en un estudio de 12 sem. generó +28% más crecimiento en esa cabeza que el pushdown (Nippard/Stronger by Science). Codos fijos."},
-      {ord:2,name:"Fondos en paralelas",series:5,reps:"8–10",prev:"10kg lastrado",alt:false,rir:"1–2",note:"Multiarticular (hombro+codo): no llevar a fallo real."},
-      {ord:2,name:"Press banca agarre cerrado",series:5,reps:"8–10",prev:"—",alt:true,rir:"1–2",note:"Compuesto equivalente a fondos, sin el estrés específico de hombro de los paralelos."},
-    ]},
-  ]},
-  {id:2,label:"D2",sub:"Espalda · Bíceps · Hombro post.",muscles:[
-    {name:"Espalda",color:"var(--espalda)",exercises:[
-      {ord:1,name:"Remo en máquina pecho apoyado",series:5,reps:"6–8",prev:"72",alt:false,rir:"1–2",note:"Pecho apoyado: la lumbar no estabiliza la carga."},
-      {ord:1,name:"Remo en T pecho apoyado",series:5,reps:"6–8",prev:"—",alt:true,rir:"1–2",note:"Mismo patrón chest-supported que Nippard sitúa como su mejor categoría de espalda."},
-      {ord:2,name:"Jalón al pecho agarre neutro abierto",series:5,reps:"10",prev:"63",alt:false,rir:"1–2",note:"Pecho arriba (extensión torácica); tira liderando con el codo/meñique, no con el bíceps."},
-      {ord:3,name:"Remo en polea agarre cerrado",series:5,reps:"10–12",prev:"68",alt:false,rir:"1–2",note:"Codos pegados al cuerpo, sin balanceo lumbar; controla la excéntrica 2–3s."},
+      {id:"ext-overhead-cuerda",ord:1,name:"Extensión overhead en polea alta con cuerda",series:3,reps:"8–10",rir:"0–1",rest:"90 s",prev:"33",alt:false,note:"Más crecimiento que el pushdown en las tres cabezas (Maeo)."},
     ]},
     {name:"Bíceps",color:"var(--biceps)",exercises:[
-      {ord:1,name:"Bíceps polea baja, una mano (Bayesian)",series:4,reps:"10",prev:"9",alt:false,rir:"0–1",note:"De espaldas a la polea, brazo detrás del torso: maximiza el estiramiento en la porción alta del recorrido."},
-      {ord:2,name:"Bíceps pecho apoyado en banco (preacher)",series:5,reps:"8–10",prev:"12",alt:false,rir:"0–1",note:"Ángulo 45°: máximo estiramiento en la porción baja del bíceps. Nippard lo sitúa top-tier junto al Bayesian."},
-      {ord:2,name:"Spider curl (banco inclinado prono)",series:5,reps:"8–10",prev:"—",alt:true,rir:"0–1",note:"S-tier: estiramiento profundo en cabeza corta, equivalente al preacher."},
+      {id:"bayesian",ord:1,name:"Bíceps polea baja una mano (Bayesian)",series:3,reps:"8–10",rir:"0–1",rest:"90 s",prev:"9",alt:false,note:"Buen ejercicio; el ángulo del hombro no aporta crecimiento extra."},
+    ]},
+  ]},
+  {id:2,label:"D2",sub:"Lower · Fuerza",muscles:[
+    {name:"Cuádriceps",color:"var(--cuad)",exercises:[
+      {id:"sentadilla-libre",ord:1,name:"Sentadilla libre profunda",series:4,reps:"3–5",rir:"2",rest:"3 min",prev:"125",alt:false,note:"Historial lumbar: nunca al fallo."},
+      {id:"prensa-d2",ord:1,name:"Prensa de piernas",series:4,reps:"6–8",rir:"2",rest:"3 min",prev:"—",alt:true,note:"Alternativa con menos carga lumbar."},
+      {id:"extensiones-d2",ord:2,name:"Extensiones",series:3,reps:"8–10",rir:"0–1",rest:"90 s",prev:"79",alt:false,note:"Reclina el respaldo si la máquina lo permite."},
+    ]},
+    {name:"Femoral",color:"var(--fem)",exercises:[
+      {id:"femoral-sentado-d2",ord:1,name:"Femoral sentado",series:4,reps:"8–10",rir:"0–1",rest:"90–120 s",prev:"79",alt:false,note:"Más crecimiento que el tumbado (Maeo)."},
+      {id:"femoral-tumbado",ord:2,name:"Femoral tumbado",series:3,reps:"10–12",rir:"0–1",rest:"90 s",prev:"200",alt:true,note:"Solo si no haces el gemelo."},
+    ]},
+    {name:"Gemelo",color:"var(--gemelo)",exercises:[
+      {id:"gemelo-pie",ord:1,name:"Gemelo de pie o en Smith",series:3,reps:"10–15",rir:"0–1",rest:"90 s",prev:"—",alt:false,note:"Pausa abajo, en estiramiento."},
+    ]},
+  ]},
+  {id:3,label:"D3",sub:"Upper · Hipertrofia",muscles:[
+    {name:"Pecho",color:"var(--pecho)",exercises:[
+      {id:"press-inclinado-mancuernas",ord:1,name:"Press inclinado con mancuernas",series:4,reps:"8–10",rir:"1 (últ. 0)",rest:"2 min",prev:"72",alt:false,note:"Banco 30–45°. Baja hasta sentir estiramiento."},
+      {id:"aperturas",ord:2,name:"Aperturas (máquina / polea sentado)",series:3,reps:"10–12",rir:"0–1",rest:"90 s",prev:"66",alt:false,note:"Codo con flexión fija. Parciales en estiramiento opcionales."},
+    ]},
+    {name:"Espalda",color:"var(--espalda)",exercises:[
+      {id:"remo-polea-cerrado",ord:1,name:"Remo en polea agarre cerrado",series:4,reps:"10–12",rir:"0–1",rest:"90 s",prev:"68",alt:false,note:"Excéntrica controlada 2–3 s."},
+      {id:"remo-polea-pecho-apoyado-una-mano",ord:1,name:"Remo en polea pecho apoyado en banco, una mano",series:4,reps:"10–12",rir:"0–1",rest:"90 s",prev:"—",alt:true,note:"Alternativa: el apoyo libera la lumbar."},
+      {id:"pullover-polea",ord:2,name:"Pullover en polea",series:3,reps:"10–12",rir:"0–1",rest:"90 s",prev:"29",alt:false,note:"Dorsal sin implicar la lumbar. Parciales en estiramiento opcionales."},
+    ]},
+    {name:"Hombro",color:"var(--hombro)",exercises:[
+      {id:"elevacion-lateral",ord:1,name:"Elevación lateral (polea o mancuerna)",series:4,reps:"12–15",rir:"0–1",rest:"90 s",prev:"4,5",alt:false,note:"Mismo resultado con ambas. Si falta tiempo, quita 1 serie."},
     ]},
     {name:"Hombro post.",color:"var(--hombro)",exercises:[
-      {ord:1,name:"Hombro posterior en polea (reverse fly)",series:4,reps:"12–15",prev:"4,5",alt:false,rir:"0–1",note:"Agarre neutro (palmas enfrentadas) activa más el deltoides posterior que el pronado. No retraigas escápula en exceso."},
-      {ord:1,name:"Face pull en polea",series:4,reps:"12–15",prev:"—",alt:true,rir:"0–1",note:"Nippard: da un \"gran estiramiento\" al deltoides posterior, mejor que el pájaro clásico."},
-    ]},
-  ]},
-  {id:3,label:"D3",sub:"Cuádriceps · Femoral",muscles:[
-    {name:"Cuádriceps",color:"var(--cuad)",exercises:[
-      {ord:1,name:"Sentadilla libre profunda",series:5,reps:"3–5",prev:"125",alt:false,rir:"1–2",note:"Historial lumbar: no llevar a fallo real. 1RM est. 115 kg"},
-      {ord:1,name:"Prensa de piernas",series:5,reps:"6–8",prev:"—",alt:true,rir:"1–2",note:"Menor exigencia lumbar que la sentadilla libre (coincide con tu historial), movimiento guiado."},
-      {ord:2,name:"Sentadilla Goblet",series:2,reps:"8–10",prev:"46",alt:false,rir:"1–2",note:"Serie de trabajo real, no calentamiento."},
-      {ord:3,name:"Extensiones",series:5,reps:"8–10",prev:"79",alt:false,rir:"0–1",note:"Tira de los agarres para fijar el glúteo al asiento: si la cadera sube y baja, pierdes tensión en el cuádriceps."},
-    ]},
-    {name:"Femoral",color:"var(--fem)",exercises:[
-      {ord:4,name:"Femoral sentado",series:5,reps:"8–10",prev:"79",alt:false,rir:"0–1",note:"Posición sentada = isquiotibial en mayor estiramiento; estudios muestran más hipertrofia proximal que la variante tumbada (~56% más en un estudio de 2021)."},
-      {ord:4,name:"RDL con mancuernas",series:5,reps:"8–10",prev:"—",alt:true,rir:"0–1",note:"Bisagra de cadera: estira el isquio en la porción distal, complementa el sesgo proximal del femoral sentado."},
-      {ord:5,name:"Femoral tumbado",series:5,reps:"10–12",prev:"200",alt:false,rir:"0–1",note:"Sustituye a la prensa (esa trabaja cuádriceps/glúteo, no isquios)."},
-    ]},
-  ]},
-  {id:4,label:"D4",sub:"Pecho · Espalda · Hombro",muscles:[
-    {name:"Pecho",color:"var(--pecho)",exercises:[
-      {ord:1,name:"Chest press (máquina)",series:3,reps:"8–10",prev:"63",alt:false,rir:"2 (últ. 1)",note:"RIR 2: prioriza ROM completo y técnica sobre subir carga, es día de menor volumen."},
-      {ord:1,name:"Press banca con mancuernas",series:3,reps:"8–10",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Fallback libre equivalente al chest press en máquina."},
-      {ord:2,name:"Aperturas (máquina/polea)",series:3,reps:"10–12",prev:"66",alt:false,rir:"2 (últ. 1)",note:"Codo con flexión fija; no dejes caer el codo para no perder tensión en pectoral."},
-    ]},
-    {name:"Espalda",color:"var(--espalda)",exercises:[
-      {ord:1,name:"Pullover en polea",series:3,reps:"10–12",prev:"29",alt:false,rir:"2 (últ. 1)",note:"Aislamiento, sin implicar la lumbar."},
-      {ord:1,name:"Pullover con mancuerna",series:3,reps:"10–12",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Mismo estímulo de estiramiento del dorsal sin depender de la polea."},
-      {ord:2,name:"Remo en polea alta, una mano",series:3,reps:"8–10",prev:"—",alt:false,rir:"2 (últ. 1)",note:"Unilateral: mayor rango y rotación torácica; tira el codo hacia atrás, no hacia arriba."},
-    ]},
-    {name:"Hombro",color:"var(--hombro)",exercises:[
-      {ord:1,name:"Press con mancuernas",series:3,reps:"8–10",prev:"52",alt:false,rir:"2 (últ. 1)",note:"Codos ligeramente por delante del torso, no en línea con los hombros: menos estrés articular en RIR bajo."},
-      {ord:1,name:"Press Arnold",series:3,reps:"8–10",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Buena valoración de Nippard por reclutamiento combinado anterior/lateral del deltoides."},
-      {ord:2,name:"Elevación lateral",series:3,reps:"10–12",prev:"—",alt:false,rir:"2 (últ. 1)",note:"Con mancuerna hay poca tensión abajo del recorrido; inclina algo el torso para mantener tensión constante."},
-      {ord:3,name:"Hombro posterior en máquina",series:3,reps:"12–15",prev:"59",alt:false,rir:"2 (últ. 1)",note:"Agarre neutro (si la máquina lo permite) aísla mejor el deltoides posterior que el pronado."},
-      {ord:3,name:"Face pull en polea",series:3,reps:"12–15",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Mismo razonamiento que D2: gran estiramiento, bajo coste de fatiga para día RIR 2."},
-    ]},
-  ]},
-  {id:5,label:"D5",sub:"Piernas · Bíceps · Tríceps",muscles:[
-    {name:"Cuádriceps",color:"var(--cuad)",exercises:[
-      {ord:1,name:"Hack squat (o sentadilla Smith/multipower)",series:3,reps:"8–10",prev:"82",alt:false,rir:"2 (últ. 1)",note:"Raíl guiado: menos exigencia lumbar que la libre."},
-      {ord:1,name:"Prensa de piernas",series:3,reps:"10–12",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Misma lógica que D3: movimiento guiado, menos demanda lumbar."},
-      {ord:2,name:"Extensiones",series:3,reps:"10–12",prev:"79",alt:false,rir:"2 (últ. 1)",note:"Fija el glúteo al asiento tirando de los agarres; evita que la cadera suba y baja."},
-    ]},
-    {name:"Femoral",color:"var(--fem)",exercises:[
-      {ord:3,name:"Femoral sentado",series:3,reps:"10–12",prev:"79",alt:false,rir:"2 (últ. 1)",note:"Posición sentada estira más el isquiotibial; más hipertrofia proximal que la variante tumbada."},
-      {ord:3,name:"RDL con barra",series:3,reps:"8–10",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Misma lógica que D3, variante con barra para dar variedad a la semana."},
-      {ord:4,name:"Hip thrust",series:3,reps:"10–12",prev:"—",alt:false,rir:"2 (últ. 1)",note:"Apoyo en banco: columna neutra fácil."},
+      {id:"reverse-fly",ord:1,name:"Hombro posterior en polea (reverse fly)",series:3,reps:"12–15",rir:"0–1",rest:"90 s",prev:"4,5",alt:false,note:"Agarre neutro."},
+      {id:"face-pull",ord:1,name:"Face pull en polea",series:3,reps:"12–15",rir:"0–1",rest:"90 s",prev:"—",alt:true,note:"Alternativa al reverse fly."},
     ]},
     {name:"Bíceps",color:"var(--biceps)",exercises:[
-      {ord:1,name:"Bíceps polea baja, una mano",series:3,reps:"10",prev:"11",alt:false,rir:"2 (últ. 1)",note:"Variante Bayesian: brazo detrás del torso maximiza el estiramiento en la parte alta del recorrido."},
-      {ord:2,name:"Curl inclinado con mancuernas",series:3,reps:"8–10",prev:"12",alt:false,rir:"2 (últ. 1)",note:"Banco 45–60°: el hombro en extensión estira más la cabeza larga del bíceps que un curl de pie."},
-      {ord:2,name:"Curl de pie con barra Z",series:3,reps:"8–10",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Fallback simple; menor sesgo de estiramiento que el inclinado (trade-off asumido)."},
+      {id:"preacher",ord:1,name:"Bíceps preacher",series:3,reps:"8–10",rir:"0–1",rest:"90 s",prev:"12",alt:false,note:"Más braquial que el curl inclinado. Parciales opcionales."},
     ]},
     {name:"Tríceps",color:"var(--triceps)",exercises:[
-      {ord:1,name:"Press francés en polea (pushdown)",series:3,reps:"12–15",prev:"22",alt:false,rir:"2 (últ. 1)",note:"El pushdown enfatiza cabezas lateral/medial; combina con la extensión overhead de D1 para la cabeza larga."},
-      {ord:1,name:"Extensión overhead a una mano (mancuerna)",series:3,reps:"12–15",prev:"—",alt:true,rir:"2 (últ. 1)",note:"Variante unilateral de bajo fatiga que mantiene el sesgo de estiramiento de cabeza larga."},
+      {id:"pushdown",ord:1,name:"Pushdown en polea",series:3,reps:"12–15",rir:"0–1",rest:"90 s",prev:"22",alt:false,note:"Cabezas lateral y medial."},
+    ]},
+  ]},
+  {id:4,label:"D4",sub:"Lower · Hipertrofia + Brazos",muscles:[
+    {name:"Cuádriceps",color:"var(--cuad)",exercises:[
+      {id:"hack-squat",ord:1,name:"Hack squat (o sentadilla Smith)",series:4,reps:"8–10",rir:"1–2",rest:"2 min",prev:"82",alt:false,note:"Raíl guiado: menos carga lumbar."},
+      {id:"prensa-d4",ord:1,name:"Prensa de piernas",series:4,reps:"10–12",rir:"1–2",rest:"2 min",prev:"—",alt:true,note:"Alternativa al hack squat."},
+      {id:"bulgara",ord:1,name:"Sentadilla búlgara con mancuernas",series:3,reps:"8–10 /pierna",rir:"1–2",rest:"2 min",prev:"—",alt:true,note:"Alternativa al hack squat. Reps por pierna."},
+      {id:"extensiones-d4",ord:2,name:"Extensiones",series:3,reps:"10–12",rir:"0–1",rest:"90 s",prev:"79",alt:false,note:"Reclina el respaldo si la máquina lo permite."},
+    ]},
+    {name:"Femoral",color:"var(--fem)",exercises:[
+      {id:"rdl-barra",ord:1,name:"RDL con barra",series:3,reps:"8–10",rir:"2",rest:"2 min",prev:"—",alt:false,note:"Lumbar: RIR 2 fijo, nunca al fallo."},
+      {id:"rdl-mancuernas",ord:1,name:"RDL con mancuernas",series:3,reps:"8–10",rir:"2",rest:"2 min",prev:"—",alt:true,note:"Alternativa al RDL con barra."},
+      {id:"femoral-sentado-d4",ord:2,name:"Femoral sentado",series:3,reps:"10–12",rir:"0–1",rest:"90 s",prev:"79",alt:false,note:"2ª exposición semanal (sustituye al hip thrust)."},
+    ]},
+    {name:"Bíceps",color:"var(--biceps)",exercises:[
+      {id:"curl-inclinado",ord:1,name:"Curl inclinado con mancuernas",series:3,reps:"8–10",rir:"0–1",rest:"90 s",prev:"12",alt:false,note:"Más bíceps que el preacher. Parciales opcionales."},
+    ]},
+    {name:"Tríceps",color:"var(--triceps)",exercises:[
+      {id:"ext-overhead-polea-una-mano",ord:1,name:"Extensión overhead a una mano en polea alta (de espaldas)",series:3,reps:"12–15",rir:"0–1",rest:"90 s",prev:"—",alt:false,note:"La polea mantiene la tensión en todo el recorrido."},
+      {id:"ext-overhead-mancuerna-una-mano",ord:1,name:"Extensión overhead a una mano (mancuerna)",series:3,reps:"12–15",rir:"0–1",rest:"90 s",prev:"—",alt:true,note:"Alternativa con mancuerna."},
     ]},
   ]},
 ];
+
+// ── MIGRACIÓN DESDE LA RUTINA DE 5 DÍAS ─────────────────────────────────────
+// Los datos antiguos (clave 'gym_v2') se guardaban por posición: semana → día → músculo → ejercicio.
+// Este mapa traduce cada posición de la rutina de 5 días al id del mismo ejercicio en el plan actual.
+// Lo que no tiene equivalente se conserva como 'legacy-…' y se ve en Historial → "Rutina anterior".
+const LEGACY_MAP = {
+  "1-0-0":"press-converging","1-0-1":"press-banca-barra","1-0-2":"press-inclinado-mancuernas","1-0-3":"aperturas",
+  "1-1-0":"press-maquina-cerrado","1-1-1":"press-mancuernas-sentado","1-1-2":"elevacion-lateral",
+  "1-2-0":"ext-overhead-cuerda",
+  "2-0-0":"remo-maquina-pecho-apoyado","2-0-1":"remo-t-pecho-apoyado","2-0-2":"jalon-neutro-abierto","2-0-3":"remo-polea-cerrado",
+  "2-1-0":"bayesian","2-1-1":"preacher","2-2-0":"reverse-fly","2-2-1":"face-pull",
+  "3-0-0":"sentadilla-libre","3-0-1":"prensa-d2","3-0-3":"extensiones-d2",
+  "3-1-0":"femoral-sentado-d2","3-1-1":"rdl-mancuernas","3-1-2":"femoral-tumbado",
+  "4-1-0":"pullover-polea",
+  "5-0-0":"hack-squat","5-0-1":"prensa-d4","5-0-2":"extensiones-d4",
+  "5-1-0":"femoral-sentado-d4","5-1-1":"rdl-barra",
+  "5-2-1":"curl-inclinado","5-3-0":"pushdown","5-3-1":"ext-overhead-mancuerna-una-mano",
+};
+// Ejercicios de la rutina de 5 días que ya no están en el plan (sus datos no se borran).
+const LEGACY_NAMES = {
+  "1-2-1":"Fondos en paralelas (D1 ant.)","1-2-2":"Press banca agarre cerrado (D1 ant.)",
+  "2-1-2":"Spider curl (D2 ant.)","3-0-2":"Sentadilla Goblet (D3 ant.)",
+  "4-0-0":"Chest press máquina (D4 ant.)","4-0-1":"Press banca con mancuernas (D4 ant.)","4-0-2":"Aperturas (D4 ant.)",
+  "4-1-1":"Pullover con mancuerna (D4 ant.)","4-1-2":"Remo en polea alta, una mano (D4 ant.)",
+  "4-2-0":"Press con mancuernas (D4 ant.)","4-2-1":"Press Arnold (D4 ant.)","4-2-2":"Elevación lateral (D4 ant.)",
+  "4-2-3":"Hombro posterior en máquina (D4 ant.)","4-2-4":"Face pull (D4 ant.)",
+  "5-1-2":"Hip thrust (D5 ant.)","5-2-0":"Bíceps polea baja una mano (D5 ant.)","5-2-2":"Curl de pie con barra Z (D5 ant.)",
+};
+
+// Convierte datos por posición (rutina de 5 días) a datos por id de ejercicio.
+function migrateLegacy(old) {
+  const out = {};
+  Object.keys(old || {}).forEach(week => {
+    const days = old[week] || {};
+    Object.keys(days).forEach(d => {
+      const muscles = days[d] || {};
+      Object.keys(muscles).forEach(m => {
+        const exs = muscles[m] || {};
+        Object.keys(exs).forEach(e => {
+          const key = `${d}-${m}-${e}`;
+          const id = LEGACY_MAP[key] || ('legacy-' + key);
+          if (!out[week]) out[week] = {};
+          out[week][id] = exs[e];
+        });
+      });
+    });
+  });
+  return out;
+}
+
+// Se ejecuta una sola vez: si no hay datos nuevos ('gym_v3') pero sí antiguos ('gym_v2'),
+// los convierte. 'gym_v2' NO se borra: queda como copia de seguridad en el navegador.
+(function migrateIfNeeded() {
+  try {
+    if (localStorage.getItem('gym_v3')) return;
+    const raw = localStorage.getItem('gym_v2');
+    if (!raw) return;
+    localStorage.setItem('gym_v3', JSON.stringify(migrateLegacy(JSON.parse(raw))));
+  } catch (e) { /* si falla, la app arranca vacía y gym_v2 sigue intacto */ }
+})();
 
 // ── STATE ────────────────────────────────────────────────────────────────────
 // Recuerda la última semana/día visitados (evita que al reabrir la app desde
@@ -421,14 +478,21 @@ let currentWeek = __lastPos.week;
 let currentDay = (__lastPos.day >= 1 && __lastPos.day <= PLAN.length) ? __lastPos.day : 1;
 let currentView = 'day';
 
+// Datos guardados por id de ejercicio: { semana: { idEjercicio: {peso, series, reps, rir, notas} } }
 function getState() {
-  try { return JSON.parse(localStorage.getItem('gym_v2') || '{}'); } catch { return {}; }
+  try { return JSON.parse(localStorage.getItem('gym_v3') || '{}'); } catch { return {}; }
 }
-function setState(s) { localStorage.setItem('gym_v2', JSON.stringify(s)); }
+function setState(s) { localStorage.setItem('gym_v3', JSON.stringify(s)); }
 
-function getEx(week, dayId, mIdx, eIdx) {
+const EMPTY_EX = () => ({peso:'', series:'', reps:'', rir:null, notas:''});
+function exAt(dayId, mIdx, eIdx) { return PLAN[dayId-1].muscles[mIdx].exercises[eIdx]; }
+
+function getExById(week, exId) {
   const s = getState();
-  return s?.[week]?.[dayId]?.[mIdx]?.[eIdx] || {peso:'', series:'', reps:'', rir:null, notas:''};
+  return s?.[week]?.[exId] || EMPTY_EX();
+}
+function getEx(week, dayId, mIdx, eIdx) {
+  return getExById(week, exAt(dayId, mIdx, eIdx).id);
 }
 
 // Series realmente realizadas. El plan (ex.series) es solo el objetivo/referencia;
@@ -442,17 +506,16 @@ function actualSeries(ex, st) {
   return ex.series;
 }
 function setEx(week, dayId, mIdx, eIdx, data) {
+  const exId = exAt(dayId, mIdx, eIdx).id;
   const s = getState();
   if (!s[week]) s[week] = {};
-  if (!s[week][dayId]) s[week][dayId] = {};
-  if (!s[week][dayId][mIdx]) s[week][dayId][mIdx] = {};
-  s[week][dayId][mIdx][eIdx] = {...getEx(week, dayId, mIdx, eIdx), ...data};
+  s[week][exId] = {...(s[week][exId] || EMPTY_EX()), ...data};
   setState(s);
 }
 
 function hasWeekData(week) {
   const s = getState();
-  return !!s[week];
+  return !!s[week] && Object.keys(s[week]).length > 0;
 }
 
 // ── CALC ─────────────────────────────────────────────────────────────────────
@@ -476,20 +539,14 @@ function calcRefEf(series, reps, rir) {
 }
 function getDayVol(week, dayId) {
   let t = 0;
-  const s = getState();
-  PLAN[dayId-1].muscles.forEach((m, mi) => {
-    m.exercises.forEach((ex, ei) => {
-      const d = s?.[week]?.[dayId]?.[mi]?.[ei];
-      if (d) { const v = calcVol(d.peso, d.reps, actualSeries(ex, d)); if (v) t += v; }
-    });
-  });
+  PLAN[dayId-1].muscles.forEach((m, mi) => { t += getMuscleVol(week, dayId, mi); });
   return t;
 }
 function getMuscleVol(week, dayId, mIdx) {
   let t = 0;
   const s = getState();
-  PLAN[dayId-1].muscles[mIdx].exercises.forEach((ex, ei) => {
-    const d = s?.[week]?.[dayId]?.[mIdx]?.[ei];
+  PLAN[dayId-1].muscles[mIdx].exercises.forEach(ex => {
+    const d = s?.[week]?.[ex.id];
     if (d) { const v = calcVol(d.peso, d.reps, actualSeries(ex, d)); if (v) t += v; }
   });
   return t;
@@ -497,9 +554,9 @@ function getMuscleVol(week, dayId, mIdx) {
 function getDaySeries(week, dayId) {
   let t = 0;
   const s = getState();
-  PLAN[dayId-1].muscles.forEach((m, mi) => {
-    m.exercises.forEach((ex, ei) => {
-      const d = s?.[week]?.[dayId]?.[mi]?.[ei];
+  PLAN[dayId-1].muscles.forEach(m => {
+    m.exercises.forEach(ex => {
+      const d = s?.[week]?.[ex.id];
       if (d && (d.peso || d.reps || d.series)) t += actualSeries(ex, d);
     });
   });
@@ -511,9 +568,9 @@ function getDaySeries(week, dayId) {
 function getDayExerciseCount(week, dayId) {
   let t = 0;
   const s = getState();
-  PLAN[dayId-1].muscles.forEach((m, mi) => {
-    m.exercises.forEach((ex, ei) => {
-      const d = s?.[week]?.[dayId]?.[mi]?.[ei];
+  PLAN[dayId-1].muscles.forEach(m => {
+    m.exercises.forEach(ex => {
+      const d = s?.[week]?.[ex.id];
       if (d && (d.peso || d.reps || d.series)) t++;
     });
   });
@@ -526,10 +583,11 @@ function getPrevPeso(dayId, mIdx, eIdx) {
 }
 // Últimas N sesiones con peso registrado para un ejercicio (incluye la semana actual si ya tiene dato).
 function getExerciseHistoryRows(dayId, mIdx, eIdx, limit) {
+  const exId = exAt(dayId, mIdx, eIdx).id;
   const s = getState();
   const weeks = Object.keys(s).map(Number).sort((a,b) => a-b);
   const rows = weeks.map(w => {
-    const d = s?.[w]?.[dayId]?.[mIdx]?.[eIdx];
+    const d = s?.[w]?.[exId];
     return { week: w, peso: d?.peso || null, reps: d?.reps || null, rir: d?.rir };
   }).filter(r => r.peso);
   return rows.slice(-limit);
@@ -653,7 +711,7 @@ function renderDay() {
           <div class="ex-body">
             <div class="obj-row">
               <div class="obj-lbl">Objetivo</div>
-              <div><span class="obj-val">${ex.series} series</span><span class="obj-reps">× ${ex.reps} reps${ex.rir ? ` · RIR ${ex.rir}` : ''}</span></div>
+              <div><span class="obj-val">${ex.series} series</span><span class="obj-reps">× ${ex.reps} reps${ex.rir ? ` · RIR ${ex.rir}` : ''}${ex.rest ? ` · desc. ${ex.rest}` : ''}</span></div>
             </div>
             <div class="mini-hist">${miniHistHtml}${prevNoteHtml}</div>
             <div class="prev-row">
@@ -855,6 +913,17 @@ function buildMiniChart(rows, chartId) {
 }
 
 // ── RENDER HISTORIAL ──────────────────────────────────────────────────────────
+// Sección extra con los ejercicios de la rutina de 5 días que ya no están en el plan
+// (solo aparece si alguno tiene datos). Así no se pierde ese histórico.
+function legacyHistSection(s) {
+  const ids = new Set();
+  Object.values(s).forEach(wk => Object.keys(wk || {}).forEach(k => { if (k.startsWith('legacy-')) ids.add(k); }));
+  if (!ids.size) return null;
+  const exercises = [...ids].sort().map(id => ({ id, name: LEGACY_NAMES[id.slice(7)] || id }));
+  return { id: 'ant', label: 'Rutina anterior', sub: '5 días (ejercicios que ya no están en el plan)',
+           muscles: [{ name: 'Anterior', color: 'var(--muted2)', exercises }] };
+}
+
 function renderHistorial() {
   const s = getState();
   const weeks = Object.keys(s).map(Number).sort((a,b) => a-b);
@@ -870,14 +939,14 @@ function renderHistorial() {
 
   // Build per-exercise history
   let html = '';
-  PLAN.forEach(day => {
+  [...PLAN, legacyHistSection(s)].filter(Boolean).forEach(day => {
     html += `<div class="hist-section">
       <div class="hist-title">${day.label} — ${day.sub}</div>`;
 
     day.muscles.forEach((muscle, mIdx) => {
       muscle.exercises.forEach((ex, eIdx) => {
         const rows = weeks.map(w => {
-          const d = s?.[w]?.[day.id]?.[mIdx]?.[eIdx];
+          const d = s?.[w]?.[ex.id];
           return { week: w, peso: d?.peso || null, reps: d?.reps || null, rir: d?.rir };
         }).filter(r => r.peso);
 
@@ -1104,7 +1173,8 @@ function selectWeek(w, btn) {
 // ── EXPORT / IMPORT ───────────────────────────────────────────────────────────
 function exportData() {
   const data = {
-    version: 1,
+    version: 2,
+    schema: 'by-exercise-id',
     exported: new Date().toISOString(),
     data: getState()
   };
@@ -1126,8 +1196,14 @@ function importData(event) {
     try {
       const parsed = JSON.parse(e.target.result);
       const data = parsed.data || parsed;
-      setState(data);
-      showToast('✓ Datos importados correctamente');
+      if (parsed.schema === 'by-exercise-id') {
+        setState(data);
+        showToast('✓ Datos importados correctamente');
+      } else {
+        // Backup antiguo (por posición, rutina de 5 días): se convierte al formato nuevo.
+        setState(migrateLegacy(data));
+        showToast('✓ Backup antiguo convertido e importado');
+      }
       renderDay();
       renderHistorial();
     } catch {
@@ -1140,6 +1216,7 @@ function importData(event) {
 
 function clearAllData() {
   if (confirm('¿Borrar todos los datos? Esta acción no se puede deshacer.')) {
+    localStorage.removeItem('gym_v3');
     localStorage.removeItem('gym_v2');
     localStorage.removeItem('gym_v2_pos');
     showToast('✓ Datos borrados');
@@ -1208,7 +1285,7 @@ renderDay();
 
   if ('serviceWorker' in navigator) {
     const swCode = [
-      'const CACHE = "entreno-v2-log";',
+      'const CACHE = "entreno-v3-4dias";',
       'const PAGE_URL = self.registration.scope;',
       'self.addEventListener("install", e => { self.skipWaiting(); e.waitUntil(caches.open(CACHE).then(c => c.add(PAGE_URL))); });',
       'self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => clients.claim())); });',
